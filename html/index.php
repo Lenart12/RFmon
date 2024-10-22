@@ -1,5 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaremon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="zaremon.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
 <?php
 require_once 'conf.php';
+include_once 'password.php';
+
+session_start();
+
+// Password protection
+if (isset($PASSWORD)) {
+    // Check password if submitted
+    $show_wrong_password = false;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['password'])) {
+            if ($_POST['password'] == $PASSWORD) {
+                $_SESSION['auth'] = true;
+            } else {
+                $show_wrong_password = true;
+            }
+        } else {
+            die('Invalid request.');
+        }
+    }
+    
+    // Show password form if not authenticated
+    if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
+        ?>
+        <body>
+            <h1>
+                <img src="zaremon.png" alt="Zaremon" style="height: 2em; vertical-align: middle;">
+                - <?php echo $TITLE; ?>
+            </h1>
+            <div class="content">
+                <div class="login">
+                    <h2 class="login-header">
+                        Prijava
+                    </h2>
+                    <form action="" method="post">
+                        <input type="password" name="password" placeholder="Geslo" required>
+                        <button type="submit">Prijava</button>
+                    </form>
+                    <?php if ($show_wrong_password): ?>
+                        <p class="error">Napačno geslo.</p>
+                    <?php endif; ?>
+                    <br>
+                    <div>
+                        Koda:
+                        <a href="https://github.com/Lenart12/Zaremon">GitHub</a>
+                        Lenart @ 2024
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+        <?php
+        exit();
+    }
+}
+
 
 $fmt = new IntlDateFormatter($LOCALE, IntlDateFormatter::RELATIVE_LONG, IntlDateFormatter::NONE);
 
@@ -79,18 +146,6 @@ function tx_group_name($group) {
 }
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zaremon</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="zaremon.png" type="image/png">
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-</head>
 <body>
     <h1>
         <img src="zaremon.png" alt="Zaremon" style="height: 2em; vertical-align: middle;">

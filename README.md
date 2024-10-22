@@ -44,4 +44,9 @@ To install ZAREMON, follow these steps:
 6. **Modify HTML Configuration**:
     - If needed, modify the `html/conf.php` file to adjust any additional settings for the web application.
 
+7. **(Optional) Configure password authentication**:
+    - If needed, password authentication can be enabled to prevent people who do not know the password from accessing
+      the app. To do this, uncomment the `$PASSWORD` setting in `html/conf.php` or create `html/password.php` file which
+      sets the before mentioned variable to your wanted password.
+
 By following these steps, you will have ZAREMON installed and configured properly.
