@@ -4,6 +4,8 @@
 
 ZAREMON is a tool that captures and processes FM radio signals. It saves these recordings and organizes them into groups, making it easier to track and follow conversations. This data is then displayed through a web application, providing a user-friendly interface to review the captured audio.
 
+![preview](./docs/preview.png)
+
 ## Dependencies
 
 - [PHP >= 8](https://www.php.net/releases/8.0/)
