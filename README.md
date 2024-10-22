@@ -51,4 +51,19 @@ To install ZAREMON, follow these steps:
       the app. To do this, uncomment the `$PASSWORD` setting in `html/conf.php` or create `html/password.php` file which
       sets the before mentioned variable to your wanted password.
 
+8. **(Optional) Configure notifications**:
+    - To enable notifications, you need to configure the settings in the `html/conf.php` file and the `notify/watch.sh` script. Adjust these files according to your notification preferences.
+
+    - After configuring the notification settings, create a symbolic link for the `zaremon-notify.service` to the `/etc/systemd/system` directory. This ensures that the notification service can be managed by systemd. Use the following commands:
+        ```sh
+        # Make sure to fix the /path/to/notify/watch.sh script inside the service config
+        sudo ln -s /path/to/Zaremon/zaremon-notify.service /etc/systemd/system/zaremon-notify.service
+        sudo systemctl daemon-reload
+        sudo systemctl enable zaremon-notify.service
+        sudo systemctl start zaremon-notify.service
+        ```
+
+    - Note: **Configure Mail Settings**
+        - Ensure that your system is configured to send mail. This is necessary for the notification feature to work correctly. You can use tools like `sendmail`, `postfix`, or any other mail transfer agent (MTA) of your choice. Configure the MTA according to your system's requirements and ensure it is running properly.
+
 By following these steps, you will have ZAREMON installed and configured properly.
