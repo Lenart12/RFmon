@@ -37,28 +37,28 @@ if (isset($PASSWORD)) {
         ?>
         <body>
             <h1>
-                <img src="zaremon.png" alt="Zaremon" style="height: 2em; vertical-align: middle;">
-                - <?php echo $TITLE; ?>
+            <img src="zaremon.png" alt="Zaremon" style="height: 2em; vertical-align: middle;">
+            - <?php echo $TITLE; ?>
             </h1>
             <div class="content">
-                <div class="login">
-                    <h2 class="login-header">
-                        Prijava
-                    </h2>
-                    <form action="" method="post">
-                        <input type="password" name="password" placeholder="Geslo" required>
-                        <button type="submit">Prijava</button>
-                    </form>
-                    <?php if ($show_wrong_password): ?>
-                        <p class="error">Napačno geslo.</p>
-                    <?php endif; ?>
-                    <br>
-                    <div>
-                        Koda:
-                        <a href="https://github.com/Lenart12/Zaremon">GitHub</a>
-                        Lenart @ 2024
-                    </div>
+            <div class="login">
+                <h2 class="login-header">
+                    <i class="fas fa-sign-in-alt"></i> Prijava
+                </h2>
+                <form action="" method="post">
+                    <input type="password" name="password" placeholder="Geslo" required>
+                    <button type="submit"><i class="fas fa-check"></i> Prijava</button>
+                </form>
+                <?php if ($show_wrong_password): ?>
+                <p class="error"><i class="fas fa-exclamation-circle"></i> Napačno geslo.</p>
+                <?php endif; ?>
+                <br>
+                <div>
+                <i class="fas fa-code"></i> Koda:
+                <a href="https://github.com/Lenart12/Zaremon">GitHub</a>
+                Lenart @ 2024
                 </div>
+            </div>
             </div>
         </body>
         </html>
@@ -156,12 +156,12 @@ $zaremon_sdr_service_active = trim(shell_exec('systemctl is-active zaremon-sdr.s
     <div class="content">
         <div class="controls">
             <h2 class="controls-header">
-                Nastavitve
+                <i class="fas fa-cogs"></i> Nastavitve
             </h2>
-            <a href="index.php">Osveži</a>
+            <a href="index.php"><i class="fas fa-sync-alt"></i> Osveži</a>
             <div class="checkbox-group">
                 <input type="checkbox" id="auto-play" checked>
-                <label for="auto-play">Auto-play</label>
+                <label for="auto-play"><i class="fas fa-play"></i> Auto-play</label>
             </div>
         </div>
         <?php if (!$zaremon_sdr_service_active): ?>
@@ -176,19 +176,19 @@ $zaremon_sdr_service_active = trim(shell_exec('systemctl is-active zaremon-sdr.s
             <?php foreach ($audio_records_grouped as $date => $groups): ?>
                 <div class="group-date">
                     <h2 class="gd-header">
-                        <?php echo date_group_name($date) ?>
+                        <i class="fas fa-calendar-alt"></i> <?php echo date_group_name($date) ?>
                     </h2>
                     <div class="gd-list">
                         <?php foreach ($groups as $group): ?>
                             <div class="tx-group">
                                 <div class="txg-header">
-                                    <?php echo tx_group_name($group); ?>
+                                    <i class="fas fa-clock"></i> <?php echo tx_group_name($group); ?>
                                 </div>
                                 <div class="txg-list">
                                     <?php foreach ($group as $record): ?>
                                         <div class="record">
                                             <span class="time">
-                                                <?php echo $record['datetime']->format('H:i:s'); ?>
+                                                <i class="fas fa-volume-up"></i><?php echo $record['datetime']->format('H:i:s'); ?>
                                             </span>
                                             <audio controls>
                                                 <source src="audio.php?fn=<?php echo $record['fid']; ?>" type="audio/mpeg">
@@ -204,12 +204,12 @@ $zaremon_sdr_service_active = trim(shell_exec('systemctl is-active zaremon-sdr.s
             <?php endforeach; ?>
             <?php if (empty($audio_records_grouped)): ?>
                 <div class="gd-header">
-                    <p>Ni posnetkov.</p>
+                    <p><i class="fas fa-info-circle"></i> Ni posnetkov.</p>
                 </div>
             <?php endif; ?>
             <br>
             <div>
-                Koda:
+                <i class="fas fa-code"></i> Koda:
                 <a href="https://github.com/Lenart12/Zaremon">GitHub</a>
                 Lenart @ 2024
             </div>

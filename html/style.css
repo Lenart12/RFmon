@@ -55,6 +55,7 @@ h1 {
 .record .time {
     margin-right: 10px;
     font-weight: bold;
+    white-space: nowrap;
 }
 audio {
     width: 100%;
