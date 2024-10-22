@@ -17,7 +17,7 @@ include_once 'password.php';
 session_start();
 
 // Password protection
-if (isset($PASSWORD)) {
+if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
     // Check password if submitted
     $show_wrong_password = false;
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
