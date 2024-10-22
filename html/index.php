@@ -145,6 +145,8 @@ function tx_group_name($group) {
     ' (' . count($group) . ')';
 }
 
+$zaremon_sdr_service_active = trim(shell_exec('systemctl is-active zaremon-sdr.service')) == 'active';
+
 ?>
 <body>
     <h1>
@@ -162,6 +164,14 @@ function tx_group_name($group) {
                 <label for="auto-play">Auto-play</label>
             </div>
         </div>
+        <?php if (!$zaremon_sdr_service_active): ?>
+            <div class="warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Servisni program Zaremon SDR ni aktiven!</span>
+                <br>
+                <span>Prosim obvesti administratorja.</span>
+            </div>
+        <?php endif; ?>
         <div class="recordings">
             <?php foreach ($audio_records_grouped as $date => $groups): ?>
                 <div class="group-date">

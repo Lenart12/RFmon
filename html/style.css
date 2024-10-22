@@ -130,3 +130,14 @@ audio {
     border-radius: 8px;
     text-align: center;
 }
+
+.warning {
+    background-color: #ff9800;
+    color: white;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
