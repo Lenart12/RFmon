@@ -88,111 +88,8 @@ function tx_group_name($group) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="zaremon.png" type="image/png">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        h1 {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            margin: 0;
-        }
-        @media screen and (min-width: 768px) {
-            .content {
-                width: 75%;
-                margin: 0 auto;
-            }
-            
-        }
-        .recordings {
-            padding: 20px;
-        }
-        .group-date {
-            margin-bottom: 20px;
-        }
-        .gd-header {
-            background-color: #2196F3;
-            color: white;
-            padding: 10px;
-            margin: 0;
-        }
-        .gd-list {
-            border: 1px solid #ddd;
-            padding: 10px;
-            background-color: white;
-        }
-        .tx-group {
-            margin-bottom: 10px;
-        }
-        .txg-header {
-            background-color: #f1f1f1;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .txg-list {
-            padding: 10px;
-        }
-        .record {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .record .time {
-            margin-right: 10px;
-            font-weight: bold;
-        }
-        audio {
-            width: 100%;
-        }
-        .controls {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .controls-header {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            margin-right: 10px;
-            transform: scale(1.5);
-        }
-
-        .checkbox-group label {
-            font-size: 1.2em;
-        }
-        .controls a {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        .controls a:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
 </head>
 <body>
     <h1>
@@ -253,18 +150,5 @@ function tx_group_name($group) {
             </div>
         </div>
     </div>
-    <script>
-        document.querySelectorAll('audio').forEach(function(audio) {
-            audio.addEventListener('ended', function() {
-                if (!document.getElementById('auto-play').checked) {
-                    return;
-                }
-                var next = audio.closest('.record').nextElementSibling;
-                if (next && next.querySelector('audio')) {
-                    next.querySelector('audio').play();
-                }
-            });
-        });
-    </script>
 </body>
 </html>
