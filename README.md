@@ -69,7 +69,7 @@ To install RFMON, follow these steps:
         sudo systemctl start rfmon-watch.service
         ```
 
-8. **(Optional) Configure notifications**:
+9. **(Optional) Configure notifications**:
     - To enable notifications, you need to configure the notification settings in the `html/conf.php`. Adjust the configuration according to your notification preferences.
 
     - After configuring the notification settings, make sure `notify-watch` service is running (step 8.)
@@ -77,7 +77,7 @@ To install RFMON, follow these steps:
     - Note: **Configure Mail Settings**
         - Ensure that your system is configured to send mail. This is necessary for the notification feature to work correctly. You can use tools like `sendmail`, `postfix`, or any other mail transfer agent (MTA) of your choice. Configure the MTA according to your system's requirements and ensure it is running properly.
 
-9. **(Optional) Configure transcriptions**
+10. **(Optional) Configure transcriptions (Slovenian only)**
     - First install dependencies
         ```sh
         sudo apt install jq curl
