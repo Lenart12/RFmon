@@ -92,9 +92,16 @@ foreach ($audio_files as $file) {
             break;
         }
 
+        if ($SHOW_TRANSCRIPTIONS == true) {
+            // Transcription file is same file except with .txt extension
+            $transcription_file = $AUDIO_SRC_DIR . '/' . str_replace('.mp3', '.txt', $file);
+            $transcription = file_exists($transcription_file) ? file_get_contents($transcription_file) : null;
+        } 
+
         $audio_records[] = array(
             'fid' => $date . '_' . $time,
             'datetime' => $datetime,
+            'transcription' => $transcription ?? null
         );
     }
 }
@@ -152,7 +159,7 @@ function tx_group_name($group) {
 }
 
 $zaremon_sdr_service_active = trim(shell_exec('systemctl is-active zaremon-sdr.service')) == 'active';
-$zaremon_notify_service_active = trim(shell_exec('systemctl is-active zaremon-notify.service')) == 'active';
+$zaremon_watch_service_active = trim(shell_exec('systemctl is-active zaremon-watch.service')) == 'active';
 
 if (isset($NOTIFY_DIR)) {
     foreach (['NOTIFY_DIR', 'NOTIFY_TIMEOUT', 'NOTIFY_SUBJECT', 'NOTIFY_FROM', 'NOTIFY_LINK_HOST'] as $var) {
@@ -223,10 +230,10 @@ if (isset($NOTIFY_DIR)) {
                 <span>Prosim obvesti administratorja.</span>
             </div>
         <?php endif; ?>
-        <?php if (isset($NOTIFY_DIR) && !$zaremon_notify_service_active): ?>
+        <?php if ((isset($NOTIFY_DIR) || isset($SHOW_TRANSCRIPTIONS)) && !$zaremon_watch_service_active): ?>
             <div class="warning">
                 <i class="fas fa-exclamation-triangle"></i>
-                <span>Servisni program Zaremon Notify ni aktiven!</span>
+                <span>Servisni program Zaremon Watch ni aktiven!</span>
                 <br>
                 <span>Prosim obvesti administratorja.</span>
             </div>
@@ -253,13 +260,20 @@ if (isset($NOTIFY_DIR)) {
                                 <div class="txg-list">
                                     <?php foreach ($group as $record): ?>
                                         <div class="record">
-                                            <span class="time">
-                                                <i class="fas fa-volume-up"></i><?php echo $record['datetime']->format('H:i:s'); ?>
-                                            </span>
-                                            <audio controls>
-                                                <source src="audio.php?fn=<?php echo $record['fid']; ?>" type="audio/mpeg">
-                                                Your browser does not support the audio element.
-                                            </audio>
+                                            <div class="record-audio">
+                                                <span class="time">
+                                                    <i class="fas fa-volume-up"></i><?php echo $record['datetime']->format('H:i:s'); ?>
+                                                </span>
+                                                <audio controls>
+                                                    <source src="audio.php?fn=<?php echo $record['fid']; ?>" type="audio/mpeg">
+                                                    Your browser does not support the audio element.
+                                                </audio>
+                                            </div>
+                                            <?php if (isset($record['transcription'])): ?>
+                                                <div class="record-transcription">
+                                                    <i class="fas fa-commenting"></i> <?php echo $record['transcription']; ?>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>

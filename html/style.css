@@ -48,15 +48,32 @@ h1 {
     padding: 10px;
 }
 .record {
+    padding: 20px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .record .time {
     margin-right: 10px;
     font-weight: bold;
     white-space: nowrap;
 }
+
+.record-audio {
+    padding: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.record-transcription {
+    padding: 0;
+    margin: 0;
+}
+
 audio {
     width: 100%;
 }

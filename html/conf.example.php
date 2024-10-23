@@ -29,3 +29,7 @@ $RECORD_MAX_AGE = 30 * (24 * 3600); // 30 days
 # $NOTIFY_FROM = "$TITLE <zaremon@example.com>";
 # $NOTIFY_LINK_HOST = "http://example.com/zaremon";
 ### End email notification configuration ###
+
+### Transriptions configuration ###
+# $SHOW_TRANSCRIPTIONS = true;
+### End transcriptions configuration ###
