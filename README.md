@@ -1,11 +1,13 @@
 <h1>
-    <img src="./html/zaremon.png" height="100" alt="Zaremon">
+    <img src="./docs/rfmon-title.png" height="100" alt="RFmon">
 </h1>
 
 ![preview](./docs/preview.png)
 
-ZAREMON is a tool that captures and processes FM radio signals. It saves these recordings and organizes them into groups, making it easier to track and follow conversations. This data is then displayed through a web application, providing a user-friendly interface to review the captured audio.
+RFMON is a tool that captures and processes FM radio signals. It saves these recordings and organizes them into groups, making it easier to track and follow conversations. This data is then displayed through a web application, providing a user-friendly interface to review the captured audio.
 
+> [!CAUTION]
+> **Disclaimer:** Recording conversations or communications without consent may be illegal in your jurisdiction. It is the user's responsibility to ensure that they have obtained all necessary permissions from individuals being recorded. The developer(s) of RFMON are not liable for any misuse of this software.
 
 ## Dependencies
 
@@ -14,7 +16,7 @@ ZAREMON is a tool that captures and processes FM radio signals. It saves these r
 
 ## Installing
 
-To install ZAREMON, follow these steps:
+To install RFMON, follow these steps:
 
 0. **(Clone this repository)**
 
@@ -24,24 +26,24 @@ To install ZAREMON, follow these steps:
 2. **Deploy HTML Folder**:
     - Add a symbolic link for the HTML folder to your deployment directory or configure site settings to point to the html folder. This allows the web application to access the necessary HTML files. Example:
         ```sh
-        sudo ln -s /path/to/Zaremon/html /var/www/html/zaremon
+        sudo ln -s /path/to/RFmon/html /var/www/html/rfmon
         ```
 
-3. **Configure Frequency in zare_sdr.conf**:
-    - Open the `zare_sdr.conf` file and configure the frequency settings according to your requirements.
+3. **Configure Frequency in rfmon_sdr.conf**:
+    - Open the `rfmon_sdr.conf` file and configure the frequency settings according to your requirements.
 
 4. **Set Output Paths**:
-    - Set the output path to the same wanted directory in both `conf.php` and `zare_sdr.conf` files. This ensures that the recordings are stored and then read from in the correct locations.
+    - Set the output path to the same wanted directory in both `conf.php` and `rfmon_sdr.conf` files. This ensures that the recordings are stored and then read from in the correct locations.
 
 
-5. **Create Symlink for zaremon-sdr.service**:
-    - Add a symbolic link for the `zaremon-sdr.service` to the `/etc/systemd/system` directory. This ensures that the service can be managed by systemd. Use the following command:
+5. **Create Symlink for rfmon-sdr.service**:
+    - Add a symbolic link for the `rfmon-sdr.service` to the `/etc/systemd/system` directory. This ensures that the service can be managed by systemd. Use the following command:
         ```sh
-        # Make sure to fix the path to zare_sdr.conf in zaremond-sdr.service
-        sudo ln -s /path/to/Zaremon/zaremon-sdr.service /etc/systemd/system/zaremon-sdr.service
+        # Make sure to fix the path to rfmon_sdr.conf in rfmon-sdr.service
+        sudo ln -s /path/to/RFmon/rfmon-sdr.service /etc/systemd/system/rfmon-sdr.service
         sudo systemctl daemon-reload
-        sudo systemctl enable zaremon-sdr.service
-        sudo systemctl start zaremon-sdr.service
+        sudo systemctl enable rfmon-sdr.service
+        sudo systemctl start rfmon-sdr.service
         ```
 
 6. **Modify HTML Configuration**:
@@ -58,13 +60,13 @@ To install ZAREMON, follow these steps:
         sudo apt install inotify-tools
         ```
 
-    -  To enable and run the service create a symbolic link for the `zaremon-watch.service` to the `/etc/systemd/system` directory. This ensures that the watch service can be managed by systemd. Use the following commands:
+    -  To enable and run the service create a symbolic link for the `rfmon-watch.service` to the `/etc/systemd/system` directory. This ensures that the watch service can be managed by systemd. Use the following commands:
         ```sh
-        # Make sure to fix the /path/to/zaremon/watch.sh script inside the service config
-        sudo ln -s /path/to/Zaremon/zaremon-watch.service /etc/systemd/system/zaremon-watch.service
+        # Make sure to fix the /path/to/RFmon/watch.sh script inside the service config
+        sudo ln -s /path/to/RFmon/rfmon-watch.service /etc/systemd/system/rfmon-watch.service
         sudo systemctl daemon-reload
-        sudo systemctl enable zaremon-watch.service
-        sudo systemctl start zaremon-watch.service
+        sudo systemctl enable rfmon-watch.service
+        sudo systemctl start rfmon-watch.service
         ```
 
 8. **(Optional) Configure notifications**:
@@ -88,4 +90,4 @@ To install ZAREMON, follow these steps:
     - (*Optional*): Transcribe existing audio recordings by running the script `./transcribe.sh`. 
 
 
-By following these steps, you will have ZAREMON installed and configured properly.
+By following these steps, you will have RFMON installed and configured properly.

@@ -8,6 +8,7 @@ CONF_PHP="$SCRIPT_DIR/html/conf.php"
 function get_conf() { php -r "require '$CONF_PHP'; echo isset(\$$1) ? \$$1 : "";"; }
 
 WATCH_DIR="$(get_conf "AUDIO_SRC_DIR")"
+LOCALE="$(get_conf "LOCALE")"
 
 ### END OF CONFIGURATION ###
 
@@ -38,6 +39,12 @@ if ! command -v curl &> /dev/null
 then
     echo "curl command not found."
     echo "Please install curl package."
+    exit 1
+fi
+
+if [ "$LOCALE" != "sl_SI" ]
+then
+    echo "Only slovenian locale is supported."
     exit 1
 fi
 

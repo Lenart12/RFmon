@@ -6,6 +6,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once 'conf.php';
+require_once 'locale.php';
 
 session_start();
 
@@ -34,34 +35,34 @@ if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Zaremon - Prijava</title>
+            <title>RFmon - <?php echo $S_LOGIN; ?> </title>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-            <link rel="icon" href="zaremon.png" type="image/png">
+            <link rel="icon" href="rfmon.png" type="image/png">
             <link rel="stylesheet" href="style.css">
             <script src="script.js"></script>
         </head>
         <body>
             <h1>
-            <img src="zaremon.png" alt="Zaremon" style="height: 2em; vertical-align: middle;">
-            - <?php echo $TITLE; ?>
+            <img src="rfmon.png" alt="RFmon" style="height: 2em; vertical-align: middle;">
+            - <?php echo $S_LOGIN; ?>
             </h1>
             <div class="content">
             <div class="login">
                 <h2 class="login-header">
-                    <i class="fas fa-sign-in-alt"></i> Prijava
+                    <i class="fas fa-sign-in-alt"></i> <?php echo $S_LOGIN; ?>
                 </h2>
                 <form action="" method="post">
-                    <input type="password" name="password" placeholder="Geslo" required>
-                    <button type="submit"><i class="fas fa-check"></i> Prijava</button>
+                    <input type="password" name="password" placeholder="<?php echo $S_PASSWORD; ?>" required>
+                    <button type="submit"><i class="fas fa-check"></i> <?php echo $S_LOGIN; ?></button>
                 </form>
                 <?php if ($show_wrong_password): ?>
-                <p class="error"><i class="fas fa-exclamation-circle"></i> Napačno geslo.</p>
+                <p class="error"><i class="fas fa-exclamation-circle"></i> <?php echo $S_WRONG_PASSWORD; ?></p>
                 <?php endif; ?>
                 <br>
                 <div>
-                <i class="fas fa-code"></i> Koda:
-                <a href="https://github.com/Lenart12/Zaremon">GitHub</a>
+                <i class="fas fa-code"></i> <?php echo $S_SOURCE_CODE; ?>:
+                <a href="https://github.com/Lenart12/RFmon">GitHub</a>
                 Lenart @ 2024
                 </div>
             </div>
@@ -158,11 +159,11 @@ function tx_group_name($group) {
     ' (' . count($group) . ')';
 }
 
-$zaremon_sdr_service_active = trim(shell_exec('systemctl is-active zaremon-sdr.service')) == 'active';
-$zaremon_watch_service_active = trim(shell_exec('systemctl is-active zaremon-watch.service')) == 'active';
+$rfmon_sdr_service_active = trim(shell_exec('systemctl is-active rfmon-sdr.service')) == 'active';
+$rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.service')) == 'active';
 
 if (isset($NOTIFY_DIR)) {
-    foreach (['NOTIFY_DIR', 'NOTIFY_TIMEOUT', 'NOTIFY_SUBJECT', 'NOTIFY_FROM', 'NOTIFY_LINK_HOST'] as $var) {
+    foreach (['NOTIFY_DIR', 'NOTIFY_TIMEOUT', 'NOTIFY_FROM', 'NOTIFY_LINK_HOST'] as $var) {
         if (!isset($$var)) {
             echo "$var not set.";
             exit();
@@ -187,55 +188,55 @@ if (isset($NOTIFY_DIR)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo "$TITLE"; ?> - Zaremon</title>
+    <title><?php echo "$TITLE"; ?> - RFmon</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="zaremon.png" type="image/png">
+    <link rel="icon" href="rfmon.png" type="image/png">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
 <body>
     <h1>
-        <img src="zaremon.png" alt="Zaremon" style="height: 2em; vertical-align: middle;">
+        <img src="rfmon.png" alt="RFmon" style="height: 2em; vertical-align: middle;">
         - <?php echo $TITLE; ?>
     </h1>
     <div class="content">
         <div class="controls">
             <h2 class="controls-header">
-                <i class="fas fa-cogs"></i> Nastavitve
+                <i class="fas fa-cogs"></i> <?php echo $S_SETTINGS; ?>
             </h2>
             <div class="controls-content">
-                <a href="index.php"><i class="fas fa-sync-alt"></i> Osveži</a>
+                <a href="index.php"><i class="fas fa-sync-alt"></i> <?php echo $S_REFRESH; ?></a>
                 <div class="checkbox-group">
                     <input type="checkbox" id="auto-play" checked>
-                    <label for="auto-play"><i class="fas fa-play"></i> Auto-play</label>
+                    <label for="auto-play"><i class="fas fa-play"></i> <?php echo $S_AUTOPLAY; ?></label>
                 </div>
                 <?php if (isset($NOTIFY_DIR)): ?>
                     <div class="subscribe">
                         <form action="notify.php" method="post">
-                            <label for="ne"><i class="fas fa-envelope"></i> Naročite se na obvestila o novih posnetkih</label>
+                            <label for="ne"><i class="fas fa-envelope"></i> <?php echo $S_SUBSCRIBE_NOTIFICATIONS; ?></label>
                             <br>
-                            <input id="ne" type="email" name="s" placeholder="Vnesite vaš email" required>
-                            <button type="submit"><i class="fas fa-paper-plane"></i> Naroči se</button>
+                            <input id="ne" type="email" name="s" placeholder="<?php echo $S_ENTER_EMAIL; ?>" required>
+                            <button type="submit"><i class="fas fa-paper-plane"></i> <?php echo $S_SUBSCRIBE; ?></button>
                         </form>
                     </div>
                 <?php endif; ?>
             </div>
         </div>
-        <?php if (!$zaremon_sdr_service_active): ?>
+        <?php if (!$rfmon_sdr_service_active): ?>
             <div class="warning">
                 <i class="fas fa-exclamation-triangle"></i>
-                <span>Servisni program Zaremon SDR ni aktiven!</span>
+                <span><?php echo $S_RFMON_SDR_SERVICE_INACTIVE; ?></span>
                 <br>
-                <span>Prosim obvesti administratorja.</span>
+                <span><?php echo $S_NOTIFY_ADMIN; ?></span>
             </div>
         <?php endif; ?>
-        <?php if ((isset($NOTIFY_DIR) || isset($SHOW_TRANSCRIPTIONS)) && !$zaremon_watch_service_active): ?>
+        <?php if ((isset($NOTIFY_DIR) || isset($SHOW_TRANSCRIPTIONS)) && !$rfmon_watch_service_active): ?>
             <div class="warning">
                 <i class="fas fa-exclamation-triangle"></i>
-                <span>Servisni program Zaremon Watch ni aktiven!</span>
+                <span><?php echo $S_RFMON_WATCH_SERVICE_INACTIVE; ?></span>
                 <br>
-                <span>Prosim obvesti administratorja.</span>
+                <span><?php echo $S_NOTIFY_ADMIN; ?></span>
             </div>
         <?php endif; ?>
         <?php if (isset($_SESSION['notify'])): ?>
@@ -266,7 +267,7 @@ if (isset($NOTIFY_DIR)) {
                                                 </span>
                                                 <audio controls>
                                                     <source src="audio.php?fn=<?php echo $record['fid']; ?>" type="audio/mpeg">
-                                                    Your browser does not support the audio element.
+                                                    <?php echo $S_NO_AUDIO_SUPPORT; ?>
                                                 </audio>
                                             </div>
                                             <?php if (isset($record['transcription'])): ?>
@@ -284,13 +285,13 @@ if (isset($NOTIFY_DIR)) {
             <?php endforeach; ?>
             <?php if (empty($audio_records_grouped)): ?>
                 <div class="gd-header">
-                    <p><i class="fas fa-info-circle"></i> Ni posnetkov.</p>
+                    <p><i class="fas fa-info-circle"></i> <?php echo $S_NO_AUDIO_RECORDINGS; ?></p>
                 </div>
             <?php endif; ?>
             <br>
             <div>
-                <i class="fas fa-code"></i> Koda:
-                <a href="https://github.com/Lenart12/Zaremon">GitHub</a>
+                <i class="fas fa-code"></i> <?php echo $S_SOURCE_CODE; ?>:
+                <a href="https://github.com/Lenart12/RFmon">GitHub</a>
                 Lenart @ 2024
             </div>
         </div>

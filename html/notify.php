@@ -1,6 +1,7 @@
 <?php
 
 require_once 'conf.php';
+require_once 'locale.php';
 
 $NOTIFY_MAILINGLIST = 'notify.txt';
 $NOTIFY_LAST_SENT_TIME = 'notify_lastsent.txt';
@@ -25,6 +26,13 @@ function remove_notify_mailinglist($email) {
     $emails = explode("\n", $emails);
     $emails = array_diff($emails, array($email));
     file_put_contents($NOTIFY_MAILINGLIST, implode("\n", $emails));
+}
+
+function render_translation($str, $props) {
+    foreach ($props as $key => &$val) {
+        $str = str_replace("%$key%", $val, $str);
+    }
+    return $str;
 }
 
 #### SCRIPT MAIN ####
@@ -53,12 +61,19 @@ if (isset($argv[1])) {
             continue;
         }
         $sent_count++;
+
+        $tr_prop = array(
+            'EMAIL' => $email,
+            'TITLE' => $TITLE,
+            'NOTIFY_LINK_HOST' => $NOTIFY_LINK_HOST,
+        );
         
-        $subject = $NOTIFY_SUBJECT;
-        $message = "Nove posnetke lahko poslušate na <a href=\"$NOTIFY_LINK_HOST\">$TITLE</a>.<br><br><a href=\"$NOTIFY_LINK_HOST/notify.php?r=$email\">Odjava</a>";
+        $subject = render_translation($S_NOTIFY_EMAIL_SUBJECT, $tr_prop);
+        $body = render_translation($S_NOTIFY_EMAIL_BODY, $tr_prop);
+
         $headers = "From: $NOTIFY_FROM\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        mail($email, $subject, $message, $headers);
+        mail($email, $subject, $body, $headers);
     }
 
     echo "Sent " . $sent_count . " notify emails.\n";
@@ -96,15 +111,27 @@ if (isset($_POST['s'])) {
         exit();
     }
 
-    if (add_notify_mailinglist($email)) {
-        $subject = "Potrditev prijave na obvestila";
-        $message = "Za odjavo od obvestil klikni <a href=\"$NOTIFY_LINK_HOST/notify.php?r=$email\">tukaj</a>.";
+    if (add_notify_mailinglist($email) || true) {
+        $FILE = __DIR__ . '/rfmon.png';
+        $img = file_get_contents($FILE);
+        $RFMON_IMG = '<img src="data:image/png;base64,' . base64_encode($img) . '" height="80">';
+
+        $tr_prop = array(
+            'EMAIL' => $email,
+            'NOTIFY_LINK_HOST' => $NOTIFY_LINK_HOST,
+            'RFMON_IMG' => $RFMON_IMG
+        );
+
+        $subject = render_translation($S_SUBSCRIBE_CONFIRM_SUBJECT, $tr_prop);
+        $body = render_translation($S_SUBSCRIBE_CONFIRM_BODY, $tr_prop);
+
         $headers = "From: $NOTIFY_FROM\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        mail($email, $subject, $message, $headers);
-        $_SESSION['notify'] = 'Prijava uspešna. Preveri svoj email.';
+
+        mail($email, $subject, $body, $headers);
+        $_SESSION['notify'] = $S_SUBSCRIBE_SUCCESS;
     } else {
-        $_SESSION['notify'] = 'Email je že prijavljen.';
+        $_SESSION['notify'] = $S_SUBSCRIBE_ALREADY_SUBSCRIBED;
     }
     header('Location: index.php');
     exit();

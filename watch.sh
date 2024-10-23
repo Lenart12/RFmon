@@ -10,6 +10,7 @@ function get_conf() { php -r "require '$CONF_PHP'; echo isset(\$$1) ? \$$1 : \"\
 WATCH_DIR="$(get_conf "AUDIO_SRC_DIR")"
 SHOW_TRANSCRIPTIONS="$(get_conf "SHOW_TRANSCRIPTIONS")"
 NOTIFY_DIR="$(get_conf "NOTIFY_DIR")"
+LOCALE="$(get_conf "LOCALE")"
 
 ### END OF CONFIGURATION ###
 
@@ -64,6 +65,13 @@ then
     echo "Directory $WATCH_DIR is not writable."
     exit 1
 fi
+
+if [ "$TRANSCRIBE_AUDIO" == "YES" ] && [ "$LOCALE" != "sl_SI" ]
+then
+    echo "Only slovenian locale is supported for transcription."
+    exit 1
+fi
+
 
 # Check if inotifywait command is available
 if ! command -v inotifywait &> /dev/null

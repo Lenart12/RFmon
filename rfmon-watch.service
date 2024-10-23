@@ -1,10 +1,10 @@
 [Unit]
-Description=Zaremon Watch Service
+Description=RFmon Watch Service
 Wants=network.target
 After=network.target
 
 [Service]
-ExecStart=/bin/bash /hdd1/zaremon/watch.sh
+ExecStart=/bin/bash /hdd1/RFmon/watch.sh
 Restart=always
 
 [Install]
