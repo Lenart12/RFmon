@@ -3,11 +3,8 @@
 require_once 'conf.php';
 require_once 'locale.php';
 
-$NOTIFY_MAILINGLIST = 'notify.txt';
-$NOTIFY_LAST_SENT_TIME = 'notify_lastsent.txt';
-
 $NOTIFY_MAILINGLIST = $NOTIFY_DIR . '/notify.txt';
-$NOTIFY_LAST_SENT_TIME = $NOTIFY_DIR . '/notify_lastsent.txt';
+$NOTIFY_LAST_RECEIVED_TIME = $NOTIFY_DIR . '/notify_last_rx.txt';
 
 function add_notify_mailinglist($email) {
     global $NOTIFY_MAILINGLIST;
@@ -38,12 +35,16 @@ function render_translation($str, $props) {
 #### SCRIPT MAIN ####
 # When called from command line, send notify emails to all subscribers
 if (isset($argv[1])) {   
-    $last_sent_time = file_get_contents($NOTIFY_LAST_SENT_TIME);
-    if (!$last_sent_time) {
-        $last_sent_time = 0;
+    $last_rx_time = file_get_contents($NOTIFY_LAST_RECEIVED_TIME);
+    if (!$last_rx_time) {
+        $last_rx_time = 0;
     }
 
-    if (time() - intval($last_sent_time) < $NOTIFY_TIMEOUT) {
+    // Check if last sent time is within timeout
+    if (time() - intval($last_rx_time) < $NOTIFY_TIMEOUT) {
+        // Reset timeout to avoid sending multiple emails
+        // when called multiple times in a short period
+        file_put_contents($NOTIFY_LAST_RECEIVED_TIME, time());
         exit();
     }
 
@@ -52,7 +53,7 @@ if (isset($argv[1])) {
         exit();
     }
 
-    file_put_contents($NOTIFY_LAST_SENT_TIME, time());
+    file_put_contents($NOTIFY_LAST_RECEIVED_TIME, time());
 
     $emails = explode("\n", $emails);
     $sent_count = 0;

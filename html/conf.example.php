@@ -27,7 +27,7 @@ $RECORD_MAX_AGE = 30 * (24 * 3600); // 30 days
 // make sure that the web server can send emails and that the
 // folder exists and is writable by the web server
 # $NOTIFY_DIR = "/path/to/RFmon/notify";
-# $NOTIFY_TIMEOUT = 6 * 3600; // Minimum timeout between notifications in seconds
+# $NOTIFY_TIMEOUT = 2 * 3600; // Minimum time between last and new transmition for notifications to trigger (in seconds)
 # $NOTIFY_FROM = "$TITLE <rfmon@example.com>";
 # $NOTIFY_LINK_HOST = "http://example.com/rfmon";
 ### End email notification configuration ###
