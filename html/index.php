@@ -13,16 +13,16 @@ session_start();
 if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
     // Check password if submitted
     $show_wrong_password = false;
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (isset($_POST['password'])) {
-            if ($_POST['password'] == $PASSWORD) {
-                $_SESSION['auth'] = true;
-                header('Location: index.php');
-            } else {
-                $show_wrong_password = true;
-            }
+
+    $test_password = $_POST['password'] ?? $_GET['p'] ?? null;
+
+    if ($test_password) {
+        if ($test_password == $PASSWORD) {
+            $_SESSION['auth'] = true;
+            header('Location: index.php');
+            exit();
         } else {
-            die('Invalid request.');
+            $show_wrong_password = true;
         }
     }
     
