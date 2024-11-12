@@ -20,4 +20,4 @@ $S_RFMON_WATCH_SERVICE_INACTIVE = 'Servisni program RFmon Watch ni aktiven!';
 $S_NO_AUDIO_SUPPORT = 'Vaš brskalnik ne podpira avdio posnetkov.';
 $S_NO_AUDIO_RECORDINGS = 'Ni posnetkov.';
 $S_NOTIFY_EMAIL_SUBJECT = 'Nova aktivnost na %TITLE%';
-$S_NOTIFY_EMAIL_BODY = 'Nove posnetke lahko poslušate na <a href="%NOTIFY_LINK_HOST%">%TITLE%</a>.<br><br><a href="%NOTIFY_LINK_HOST%/notify.php?r=%EMAIL%">Odjava</a>';
+$S_NOTIFY_EMAIL_BODY = 'Število novih posnetkov: %NEW_RX_COUNT%<br>%NEW_TRANSCRIPTIONS%Nove posnetke lahko poslušate na <a href="%NOTIFY_LINK_HOST%">%TITLE%</a>.<br><br><a href="%NOTIFY_LINK_HOST%/notify.php?r=%EMAIL%">Odjava</a>';

@@ -1,5 +1,3 @@
 /rec
-html/password.php
 /html/conf.php
-/notify/notify.txt
-/notify/notify_lastsent.txt
+/notify

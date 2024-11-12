@@ -5,7 +5,7 @@ SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 ### CONFIGURATION ###
 
 CONF_PHP="$SCRIPT_DIR/html/conf.php"
-function get_conf() { php -r "require '$CONF_PHP'; echo isset(\$$1) ? \$$1 : "";"; }
+function get_conf() { php -r "require '$CONF_PHP'; echo isset(\$$1) ? \$$1 : \"\";"; }
 
 WATCH_DIR="$(get_conf "AUDIO_SRC_DIR")"
 LOCALE="$(get_conf "LOCALE")"

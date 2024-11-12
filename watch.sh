@@ -112,24 +112,26 @@ do
     then
         echo "New voice recording: $NEW_FILE"
 
-        # Call the notify.php script with the new file as an argument
-        if [ "$NOTIFY_ENABLED" == "YES" ]
-        then
-            php "$NOTIFY_PHP" "$NEW_FILE"
-        fi
-
         # Transcribe the audio file
         if [ "$TRANSCRIBE_AUDIO" == "YES" ]
         then
             TRANSCRIBED_JSON="$(curl -F "model=e2e" -F "audio_file=@$NEW_FILE" "https://slovenscina.eu/api/translator/asr")"
 
             TRANSCRIPTION="$(echo "$TRANSCRIBED_JSON" | jq -r '.result')"
+            if [ $? -eq 0 ]; then
+                # Save the transcription to a text file
+                TRANSCRIPTION_FILE="${NEW_FILE%.mp3}.txt"
+                echo "$TRANSCRIPTION" > "$TRANSCRIPTION_FILE"
+                echo "Transcription saved to: $TRANSCRIPTION_FILE"
+            else
+                echo "Error processing transcription JSON."
+            fi
+        fi
 
-            # Save the transcription to a text file
-            TRANSCRIPTION_FILE="${NEW_FILE%.mp3}.txt"
-            echo "$TRANSCRIPTION" > "$TRANSCRIPTION_FILE"
-
-            echo "Transcription saved to: $TRANSCRIPTION_FILE"
+        # Call the notify.php script with the new file as an argument
+        if [ "$NOTIFY_ENABLED" == "YES" ]
+        then
+            php "$NOTIFY_PHP" "$NEW_FILE" &
         fi
     fi
 done

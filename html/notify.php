@@ -4,7 +4,9 @@ require_once 'conf.php';
 require_once 'locale.php';
 
 $NOTIFY_MAILINGLIST = $NOTIFY_DIR . '/notify.txt';
+$NOTIFY_LAST_SENT_TIME = $NOTIFY_DIR . '/notify_last_sent.txt';
 $NOTIFY_LAST_RECEIVED_TIME = $NOTIFY_DIR . '/notify_last_rx.txt';
+$NOTIFY_WAIT_FOR_MORE_PENDING_FILE = $NOTIFY_DIR . '/notify_wait_for_more_pending.txt';
 
 function add_notify_mailinglist($email) {
     global $NOTIFY_MAILINGLIST;
@@ -34,17 +36,47 @@ function render_translation($str, $props) {
 
 #### SCRIPT MAIN ####
 # When called from command line, send notify emails to all subscribers
-if (isset($argv[1])) {   
-    $last_rx_time = file_get_contents($NOTIFY_LAST_RECEIVED_TIME);
-    if (!$last_rx_time) {
-        $last_rx_time = 0;
+if (isset($argv[1])) {
+    $rx_file = $argv[1];
+    $rx_time = time();
+
+    # Lock the file and get old received time and set new received time
+    $fp = fopen($NOTIFY_LAST_RECEIVED_TIME, 'c+');
+    if (flock($fp, LOCK_EX)) {
+        ftruncate($fp, 0);
+        rewind($fp);
+        fwrite($fp, $rx_time);
+        fflush($fp);
+
+        # Also write the received file to the pending file
+        file_put_contents($NOTIFY_WAIT_FOR_MORE_PENDING_FILE, $rx_file . "\n", FILE_APPEND);
+
+        flock($fp, LOCK_UN);
+    } else {
+        die("Couldn't lock file! $NOTIFY_LAST_RECEIVED_TIME");
+    }
+    fclose($fp);
+
+    # Wait if the script is called multiple times in a short period
+    $sleep_time = $NOTIFY_WAIT_FOR_MORE;
+    if (isset($argv[2])) {
+        $sleep_time = intval($argv[2]);
+    }
+    sleep($sleep_time);
+
+    # If last received time has changed while sleeping, then another script has been called
+    # and we should exit to avoid sending multiple emails
+    $new_rx_time = file_get_contents($NOTIFY_LAST_RECEIVED_TIME, LOCK_EX);
+    if ($new_rx_time != $rx_time) {
+        exit();
     }
 
     // Check if last sent time is within timeout
-    if (time() - intval($last_rx_time) < $NOTIFY_TIMEOUT) {
+    $last_sent_time = file_get_contents($NOTIFY_LAST_SENT_TIME, LOCK_EX) ?: 0;
+    file_put_contents($NOTIFY_LAST_SENT_TIME, $rx_time, LOCK_EX);
+    if (time() - intval($last_sent_time) < $NOTIFY_TIMEOUT) {
         // Reset timeout to avoid sending multiple emails
         // when called multiple times in a short period
-        file_put_contents($NOTIFY_LAST_RECEIVED_TIME, time());
         exit();
     }
 
@@ -52,10 +84,50 @@ if (isset($argv[1])) {
     if (!$emails) {
         exit();
     }
-
-    file_put_contents($NOTIFY_LAST_RECEIVED_TIME, time());
-
     $emails = explode("\n", $emails);
+
+    $pending_files = file($NOTIFY_WAIT_FOR_MORE_PENDING_FILE, FILE_IGNORE_NEW_LINES);
+    $pending_files = array_unique($pending_files);
+    file_put_contents($NOTIFY_WAIT_FOR_MORE_PENDING_FILE, '');
+
+    $NEW_RX_COUNT = count($pending_files);
+    $NEW_TRANSCRIPTIONS = '';
+    
+    if ($SHOW_TRANSCRIPTIONS) {
+        $transcriptions = array();
+
+        function empty_transcription($transcription) {
+            if (empty($transcription)) {
+                return true;
+            }
+            $transcription = preg_replace('/\s+/', '', $transcription);
+            $transcription = preg_replace('/<.+?>/', '', $transcription);
+            $transcription = trim($transcription);
+            return empty($transcription);
+        }
+
+        foreach ($pending_files as $file) {
+            $transcription_file = str_replace('.mp3', '.txt', $file);
+            $transcription = file_get_contents($transcription_file);
+            # If not transcribed or transcription is empty, skip
+            if (empty_transcription($transcription)) {
+                continue;
+            }
+            $transcriptions[] = $transcription;
+        }
+
+        if (count($transcriptions) == 0) {
+            die("No interesting transcriptions found.");
+        }
+
+        $NEW_TRANSCRIPTIONS = '<ul>';
+        foreach ($transcriptions as $transcription) {
+            $NEW_TRANSCRIPTIONS .= "<li>$transcription</li>";
+        }
+        $NEW_TRANSCRIPTIONS .= '</ul><br>';
+    }
+
+
     $sent_count = 0;
     foreach ($emails as $email) {
         if (empty($email)) {
@@ -66,6 +138,8 @@ if (isset($argv[1])) {
         $tr_prop = array(
             'EMAIL' => $email,
             'TITLE' => $TITLE,
+            'NEW_RX_COUNT' => $NEW_RX_COUNT,
+            'NEW_TRANSCRIPTIONS' => $NEW_TRANSCRIPTIONS,
             'NOTIFY_LINK_HOST' => $NOTIFY_LINK_HOST,
         );
         
