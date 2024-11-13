@@ -29,8 +29,9 @@ $RECORD_MAX_AGE = 30 * (24 * 3600); // 30 days
 # $NOTIFY_DIR = "/path/to/RFmon/notify";
 # $NOTIFY_TIMEOUT = 2 * 3600; // Minimum time between last and new transmition for notifications to trigger (in seconds)
 # $NOTIFY_WAIT_FOR_MORE = 3 * 60; // Time to wait for more transmitions before sending notification (in seconds)
-# $NOTIFY_FROM = "$TITLE <rfmon@example.com>";
-# $NOTIFY_LINK_HOST = "http://example.com/rfmon";
+# $NOTIFY_FROM = "$TITLE <rfmon@example.com>"; // Email sender
+# $NOTIFY_LINK_HOST = "http://example.com/rfmon"; // Hostname (and path) to rfmon
+# $NOTIFY_AUTO_LOGIN = true; // Automatically log in user to the app when clicking the link (by adding a temporary login token to the link host URL ?h=...)
 ### End email notification configuration ###
 
 ### Transriptions configuration ###

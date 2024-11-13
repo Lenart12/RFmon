@@ -8,6 +8,10 @@ error_reporting(E_ALL);
 require_once 'conf.php';
 require_once 'locale.php';
 
+if (isset($NOTIFY_DIR)) {
+    require_once 'notify_common.php';
+}
+
 session_start();
 
 // Password protection
@@ -19,6 +23,20 @@ if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
 
     if ($test_password) {
         if ($test_password == $PASSWORD) {
+            $_SESSION['auth'] = true;
+            header('Location: index.php');
+            exit();
+        } else {
+            $show_wrong_password = true;
+        }
+    }
+
+    // Alternative login method with MD5 hash of password (used for notifications)
+    if (isset($_GET['h'])) {
+        $hash_password = $_GET['h'];
+        $correct_hash = get_current_notify_password_hash();
+
+        if ($hash_password === $correct_hash) {
             $_SESSION['auth'] = true;
             header('Location: index.php');
             exit();
@@ -161,27 +179,6 @@ function tx_group_name($group) {
 
 $rfmon_sdr_service_active = trim(shell_exec('systemctl is-active rfmon-sdr.service')) == 'active';
 $rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.service')) == 'active';
-
-if (isset($NOTIFY_DIR)) {
-    foreach (['NOTIFY_DIR', 'NOTIFY_TIMEOUT', 'NOTIFY_FROM', 'NOTIFY_LINK_HOST'] as $var) {
-        if (!isset($$var)) {
-            echo "$var not set.";
-            exit();
-        }
-    }
-
-    // check if notify directory exists and is writable
-    if (!is_dir($NOTIFY_DIR)) {
-        echo "Notify directory not found. $NOTIFY_DIR";
-        exit();
-    }
-
-    if (!is_writable($NOTIFY_DIR)) {
-        echo "Notify directory not writable. $NOTIFY_DIR";
-        exit();
-    }
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

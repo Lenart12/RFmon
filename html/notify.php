@@ -1,38 +1,6 @@
 <?php
 
-require_once 'conf.php';
-require_once 'locale.php';
-
-$NOTIFY_MAILINGLIST = $NOTIFY_DIR . '/notify.txt';
-$NOTIFY_LAST_SENT_TIME = $NOTIFY_DIR . '/notify_last_sent.txt';
-$NOTIFY_LAST_RECEIVED_TIME = $NOTIFY_DIR . '/notify_last_rx.txt';
-$NOTIFY_WAIT_FOR_MORE_PENDING_FILE = $NOTIFY_DIR . '/notify_wait_for_more_pending.txt';
-
-function add_notify_mailinglist($email) {
-    global $NOTIFY_MAILINGLIST;
-    $emails = file_get_contents($NOTIFY_MAILINGLIST);
-    $emails = explode("\n", $emails);
-    if (in_array($email, $emails)) {
-        return false;
-    }
-    file_put_contents($NOTIFY_MAILINGLIST, $email . "\n", FILE_APPEND);
-    return true;
-}
-
-function remove_notify_mailinglist($email) {
-    global $NOTIFY_MAILINGLIST;
-    $emails = file_get_contents($NOTIFY_MAILINGLIST);
-    $emails = explode("\n", $emails);
-    $emails = array_diff($emails, array($email));
-    file_put_contents($NOTIFY_MAILINGLIST, implode("\n", $emails));
-}
-
-function render_translation($str, $props) {
-    foreach ($props as $key => &$val) {
-        $str = str_replace("%$key%", $val, $str);
-    }
-    return $str;
-}
+require_once 'notify_common.php';
 
 #### SCRIPT MAIN ####
 # When called from command line, send notify emails to all subscribers
@@ -96,16 +64,6 @@ if (isset($argv[1])) {
     if ($SHOW_TRANSCRIPTIONS) {
         $transcriptions = array();
 
-        function empty_transcription($transcription) {
-            if (empty($transcription)) {
-                return true;
-            }
-            $transcription = preg_replace('/\s+/', '', $transcription);
-            $transcription = preg_replace('/<.+?>/', '', $transcription);
-            $transcription = trim($transcription);
-            return empty($transcription);
-        }
-
         foreach ($pending_files as $file) {
             $transcription_file = str_replace('.mp3', '.txt', $file);
             $transcription = file_get_contents($transcription_file);
@@ -135,12 +93,19 @@ if (isset($argv[1])) {
         }
         $sent_count++;
 
+        $link_host = $NOTIFY_LINK_HOST;
+
+        if ($NOTIFY_AUTO_LOGIN) {
+            $correct_hash = get_current_notify_password_hash();
+            $link_host .= "?h=$correct_hash";
+        }
+
         $tr_prop = array(
             'EMAIL' => $email,
             'TITLE' => $TITLE,
             'NEW_RX_COUNT' => $NEW_RX_COUNT,
             'NEW_TRANSCRIPTIONS' => $NEW_TRANSCRIPTIONS,
-            'NOTIFY_LINK_HOST' => $NOTIFY_LINK_HOST,
+            'NOTIFY_LINK_HOST' => $link_host,
         );
         
         $subject = render_translation($S_NOTIFY_EMAIL_SUBJECT, $tr_prop);
