@@ -173,6 +173,6 @@ if (isset($_POST['s'])) {
     } else {
         $_SESSION['notify'] = $S_SUBSCRIBE_ALREADY_SUBSCRIBED;
     }
-    header('Location: index.php');
+    header("Location: $BASE_PATH");
     exit();
 }

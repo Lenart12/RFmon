@@ -9,6 +9,7 @@
 $TITLE = "Unconfigured RFmon";
 $LOCALE = "en_US"; # (Translated languages: en_US, sl_SI)
 $TIMEZONE = "Europe/Ljubljana"; # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
+$BASE_PATH = "/rfmon"; // Path to the RFmon app on the web server
 ### End website configuration ###
 
 ### Audio recording configuration ###

@@ -24,7 +24,7 @@ if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
     if ($test_password) {
         if ($test_password == $PASSWORD) {
             $_SESSION['auth'] = true;
-            header('Location: index.php');
+            header("Location: $BASE_PATH");
             exit();
         } else {
             $show_wrong_password = true;
@@ -38,7 +38,7 @@ if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
 
         if ($hash_password === $correct_hash) {
             $_SESSION['auth'] = true;
-            header('Location: index.php');
+            header("Location: $BASE_PATH");
             exit();
         } else {
             $show_wrong_password = true;
@@ -203,7 +203,7 @@ $rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.s
                 <i class="fas fa-cogs"></i> <?= $S_SETTINGS ?>
             </h2>
             <div class="controls-content">
-                <a href="index.php"><i class="fas fa-sync-alt"></i> <?= $S_REFRESH ?></a>
+                <a href=""><i class="fas fa-sync-alt"></i> <?= $S_REFRESH ?></a>
                 <div class="checkbox-group">
                     <input type="checkbox" id="auto-play" checked>
                     <label for="auto-play"><i class="fas fa-play"></i> <?= $S_AUTOPLAY ?></label>
