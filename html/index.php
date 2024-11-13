@@ -53,7 +53,7 @@ if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>RFmon - <?php echo $S_LOGIN; ?> </title>
+            <title>RFmon - <?= $S_LOGIN ?> </title>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
             <link rel="icon" href="rfmon.png" type="image/png">
@@ -63,23 +63,23 @@ if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
         <body>
             <h1>
             <img src="rfmon.png" alt="RFmon" style="height: 2em; vertical-align: middle;">
-            - <?php echo $S_LOGIN; ?>
+            - <?= $S_LOGIN ?>
             </h1>
             <div class="content">
             <div class="login">
                 <h2 class="login-header">
-                    <i class="fas fa-sign-in-alt"></i> <?php echo $S_LOGIN; ?>
+                    <i class="fas fa-sign-in-alt"></i> <?= $S_LOGIN ?>
                 </h2>
                 <form action="" method="post">
-                    <input type="password" name="password" placeholder="<?php echo $S_PASSWORD; ?>" required>
-                    <button type="submit"><i class="fas fa-check"></i> <?php echo $S_LOGIN; ?></button>
+                    <input type="password" name="password" placeholder="<?= $S_PASSWORD ?>" required>
+                    <button type="submit"><i class="fas fa-check"></i> <?= $S_LOGIN ?></button>
                 </form>
                 <?php if ($show_wrong_password): ?>
-                <p class="error"><i class="fas fa-exclamation-circle"></i> <?php echo $S_WRONG_PASSWORD; ?></p>
+                <p class="error"><i class="fas fa-exclamation-circle"></i> <?= $S_WRONG_PASSWORD ?></p>
                 <?php endif; ?>
                 <br>
                 <div>
-                <i class="fas fa-code"></i> <?php echo $S_SOURCE_CODE; ?>:
+                <i class="fas fa-code"></i> <?= $S_SOURCE_CODE ?>:
                 <a href="https://github.com/Lenart12/RFmon">GitHub</a>
                 Lenart @ 2024
                 </div>
@@ -185,7 +185,7 @@ $rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.s
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo "$TITLE"; ?> - RFmon</title>
+    <title><?= $TITLE ?> - RFmon</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="rfmon.png" type="image/png">
@@ -195,26 +195,26 @@ $rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.s
 <body>
     <h1>
         <img src="rfmon.png" alt="RFmon" style="height: 2em; vertical-align: middle;">
-        - <?php echo $TITLE; ?>
+        - <?= $TITLE ?>
     </h1>
     <div class="content">
         <div class="controls">
             <h2 class="controls-header">
-                <i class="fas fa-cogs"></i> <?php echo $S_SETTINGS; ?>
+                <i class="fas fa-cogs"></i> <?= $S_SETTINGS ?>
             </h2>
             <div class="controls-content">
-                <a href="index.php"><i class="fas fa-sync-alt"></i> <?php echo $S_REFRESH; ?></a>
+                <a href="index.php"><i class="fas fa-sync-alt"></i> <?= $S_REFRESH ?></a>
                 <div class="checkbox-group">
                     <input type="checkbox" id="auto-play" checked>
-                    <label for="auto-play"><i class="fas fa-play"></i> <?php echo $S_AUTOPLAY; ?></label>
+                    <label for="auto-play"><i class="fas fa-play"></i> <?= $S_AUTOPLAY ?></label>
                 </div>
                 <?php if (isset($NOTIFY_DIR)): ?>
                     <div class="subscribe">
                         <form action="notify.php" method="post">
-                            <label for="ne"><i class="fas fa-envelope"></i> <?php echo $S_SUBSCRIBE_NOTIFICATIONS; ?></label>
+                            <label for="ne"><i class="fas fa-envelope"></i> <?= $S_SUBSCRIBE_NOTIFICATIONS ?></label>
                             <br>
-                            <input id="ne" type="email" name="s" placeholder="<?php echo $S_ENTER_EMAIL; ?>" required>
-                            <button type="submit"><i class="fas fa-paper-plane"></i> <?php echo $S_SUBSCRIBE; ?></button>
+                            <input id="ne" type="email" name="s" placeholder="<?= $S_ENTER_EMAIL ?>" required>
+                            <button type="submit"><i class="fas fa-paper-plane"></i> <?= $S_SUBSCRIBE ?></button>
                         </form>
                     </div>
                 <?php endif; ?>
@@ -223,23 +223,23 @@ $rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.s
         <?php if (!$rfmon_sdr_service_active): ?>
             <div class="warning">
                 <i class="fas fa-exclamation-triangle"></i>
-                <span><?php echo $S_RFMON_SDR_SERVICE_INACTIVE; ?></span>
+                <span><?= $S_RFMON_SDR_SERVICE_INACTIVE ?></span>
                 <br>
-                <span><?php echo $S_NOTIFY_ADMIN; ?></span>
+                <span><?= $S_NOTIFY_ADMIN ?></span>
             </div>
         <?php endif; ?>
         <?php if ((isset($NOTIFY_DIR) || isset($SHOW_TRANSCRIPTIONS)) && !$rfmon_watch_service_active): ?>
             <div class="warning">
                 <i class="fas fa-exclamation-triangle"></i>
-                <span><?php echo $S_RFMON_WATCH_SERVICE_INACTIVE; ?></span>
+                <span><?= $S_RFMON_WATCH_SERVICE_INACTIVE ?></span>
                 <br>
-                <span><?php echo $S_NOTIFY_ADMIN; ?></span>
+                <span><?= $S_NOTIFY_ADMIN ?></span>
             </div>
         <?php endif; ?>
         <?php if (isset($_SESSION['notify'])): ?>
             <div class="notify">
                 <i class="fas fa-bell"></i>
-                <span><?php echo $_SESSION['notify']; ?></span>
+                <span><?= $_SESSION['notify'] ?></span>
             </div>
             <?php unset($_SESSION['notify']); ?>
         <?php endif; ?>
@@ -253,23 +253,23 @@ $rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.s
                         <?php foreach ($groups as &$group): ?>
                             <div class="tx-group">
                                 <div class="txg-header">
-                                    <i class="fas fa-clock"></i> <?php echo tx_group_name($group); ?>
+                                    <i class="fas fa-clock"></i> <?= tx_group_name($group) ?>
                                 </div>
                                 <div class="txg-list">
                                     <?php foreach ($group as $record): ?>
                                         <div class="record">
                                             <div class="record-audio">
                                                 <span class="time">
-                                                    <i class="fas fa-volume-up"></i><?php echo $record['datetime']->format('H:i:s'); ?>
+                                                    <i class="fas fa-volume-up"></i><?= $record['datetime']->format('H:i:s') ?>
                                                 </span>
                                                 <audio controls>
-                                                    <source src="audio.php?fn=<?php echo $record['fid']; ?>" type="audio/mpeg">
-                                                    <?php echo $S_NO_AUDIO_SUPPORT; ?>
+                                                    <source src="audio.php?fn=<?= $record['fid'] ?>" type="audio/mpeg">
+                                                    <?= $S_NO_AUDIO_SUPPORT ?>
                                                 </audio>
                                             </div>
                                             <?php if (isset($record['transcription'])): ?>
                                                 <div class="record-transcription">
-                                                    <i class="fas fa-commenting"></i> <?php echo $record['transcription']; ?>
+                                                    <i class="fas fa-commenting"></i> <?= $record['transcription'] ?>
                                                 </div>
                                             <?php endif; ?>
                                         </div>
@@ -282,12 +282,12 @@ $rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.s
             <?php endforeach; ?>
             <?php if (empty($audio_records_grouped)): ?>
                 <div class="gd-header">
-                    <p><i class="fas fa-info-circle"></i> <?php echo $S_NO_AUDIO_RECORDINGS; ?></p>
+                    <p><i class="fas fa-info-circle"></i> <?= $S_NO_AUDIO_RECORDINGS ?></p>
                 </div>
             <?php endif; ?>
             <br>
             <div>
-                <i class="fas fa-code"></i> <?php echo $S_SOURCE_CODE; ?>:
+                <i class="fas fa-code"></i> <?= $S_SOURCE_CODE ?>:
                 <a href="https://github.com/Lenart12/RFmon">GitHub</a>
                 Lenart @ 2024
             </div>
