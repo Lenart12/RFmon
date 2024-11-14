@@ -54,6 +54,7 @@ To install RFMON, follow these steps:
     - After enabling notifications, restart the `rfmon.service`.
 
 7. **(Optional) Configure transcriptions**
+
     - First install dependencies
         ```sh
         sudo apt curl jq
@@ -62,16 +63,12 @@ To install RFMON, follow these steps:
     - To enable transcriptions, you need to enable them `conf.php`.
 
     - Create an API token for [Hugging Face](https://huggingface.co/) that has '`Make calls to the serverless Inference API`' enabled and set it in `conf.php`. (Settings > Access Tokens > Create new token).
-
-    > [!NOTE]
-    > Signed-up users get 1,000 requests per day (1 request = 1 transcription) for free without entering
-    > any card information. [Taken Nov 2024](https://huggingface.co/docs/api-inference/rate-limits)
+    > Users on Hugging Face get 1,000 free requests per day (1 request = 1 transcription) without entering any card information. [Taken Nov 2024](https://huggingface.co/docs/api-inference/rate-limits)
 
     - Optionaly also change the automatic speech recognition (ASR) model and/or language. 
 
     - After enabling transcriptions, restart the `rfmon.service`.
 
     - (*Optional*): Transcribe existing audio recordings by running the script `./transcribe.sh` inside the util folder. 
-
 
 By following these steps, you will have RFMON installed and configured properly.
