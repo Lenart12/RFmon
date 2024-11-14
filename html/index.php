@@ -177,8 +177,7 @@ function tx_group_name($group) {
     ' (' . count($group) . ')';
 }
 
-$rfmon_sdr_service_active = trim(shell_exec('systemctl is-active rfmon-sdr.service')) == 'active';
-$rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.service')) == 'active';
+$rfmon_service_active = trim(shell_exec('systemctl is-active rfmon.service')) == 'active';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -220,18 +219,10 @@ $rfmon_watch_service_active = trim(shell_exec('systemctl is-active rfmon-watch.s
                 <?php endif; ?>
             </div>
         </div>
-        <?php if (!$rfmon_sdr_service_active): ?>
+        <?php if (!$rfmon_service_active): ?>
             <div class="warning">
                 <i class="fas fa-exclamation-triangle"></i>
-                <span><?= $S_RFMON_SDR_SERVICE_INACTIVE ?></span>
-                <br>
-                <span><?= $S_NOTIFY_ADMIN ?></span>
-            </div>
-        <?php endif; ?>
-        <?php if ((isset($NOTIFY_DIR) || isset($SHOW_TRANSCRIPTIONS)) && !$rfmon_watch_service_active): ?>
-            <div class="warning">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span><?= $S_RFMON_WATCH_SERVICE_INACTIVE ?></span>
+                <span><?= $S_RFMON_SERVICE_INACTIVE ?></span>
                 <br>
                 <span><?= $S_NOTIFY_ADMIN ?></span>
             </div>
