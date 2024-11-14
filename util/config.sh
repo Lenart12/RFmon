@@ -68,15 +68,27 @@ then
     exit 1
 fi
 
-if [ ! -x "$RTLSDR_BIN_PATH" ]
+if [ "$TRANSCRIBE_AUDIO" == "YES" ] && [ -z "$ASR_MODEL" ]
 then
-    echo "RTLSDR_BIN_PATH [$RTLSDR_BIN_PATH] is not an executable file."
+    echo "ASR_MODEL is not set."
     exit 1
 fi
 
-if [ "$TRANSCRIBE_AUDIO" == "YES" ] && [ "$LOCALE" != "sl_SI" ]
+if [ "$TRANSCRIBE_AUDIO" == "YES" ] && [ -z "$HF_TOKEN" ]
 then
-    echo "Only slovenian locale (sl_SI) is supported for transcription. [$LOCALE] is not supported."
+    echo "HF_TOKEN is not set."
+    exit 1
+fi
+
+if [ "$TRANSCRIBE_AUDIO" == "YES" ] && [ -z "$ASR_LANGUAGE" ]
+then
+    echo "ASR_LANGUAGE is not set."
+    exit 1
+fi
+
+if [ ! -x "$RTLSDR_BIN_PATH" ]
+then
+    echo "RTLSDR_BIN_PATH [$RTLSDR_BIN_PATH] is not an executable file."
     exit 1
 fi
 
@@ -91,5 +103,12 @@ if [ "$TRANSCRIBE_AUDIO" == "YES" ] && ! command -v jq &> /dev/null
 then
     echo "jq command not found."
     echo "Please install jq package."
+    exit 1
+fi
+
+if [ "$TRANSCRIBE_AUDIO" == "YES" ] && ! command -v curl &> /dev/null
+then
+    echo "curl command not found."
+    echo "Please install curl package."
     exit 1
 fi

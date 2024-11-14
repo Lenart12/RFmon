@@ -29,5 +29,7 @@ do
 
         echo "Processing file: $file"
         transcribe_audio "$file"
+
+        sleep 5
     fi
 done

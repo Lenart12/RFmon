@@ -8,17 +8,12 @@ function transcribe_audio() {
     local transcription
     local transcription_status
 
-    if [ "$LOCALE" == "sl_SI" ]; then
-        echo "Razčlenujem: $audio_file"
-        local transcribed_json="$(curl -F "model=e2e" -F "audio_file=@$audio_file" "https://slovenscina.eu/api/translator/asr")"
-        echo "$transcribed_json"
-        transcription="$(echo "$transcribed_json" | jq -re '.result')"
-        transcription_status=$?
-    else
-        echo "Unsupported locale: $LOCALE"
-        return 1
-    fi
+    local file_b64=$(base64 -w 0 "$audio_file")
+    local payload="{\"inputs\":\"$file_b64\",\"parameters\":{\"generate_kwargs\":{\"language\": \"$ASR_LANGUAGE\"}}}"
 
+    local transcribed_json=$(curl -s https://api-inference.huggingface.co/models/$ASR_MODEL -X POST -d "$payload" -H "Authorization: Bearer $HF_TOKEN")
+    transcription="$(echo "$transcribed_json" | jq -re '.text')"
+    transcription_status=$?
 
     if [ $transcription_status -eq 0 ]; then
         # Save the transcription to a text file
@@ -26,6 +21,7 @@ function transcribe_audio() {
         echo "$transcription" > "$transcription_file"
         echo "Transcription saved to: $transcription_file"
     else
+        echo "$transcribed_json"
         echo "Error processing transcription for $audio_file."
         return 1
     fi

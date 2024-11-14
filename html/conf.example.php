@@ -40,6 +40,11 @@ $RECORD_MAX_AGE = 30 * (24 * 3600); // 30 days
 ### End email notification configuration ###
 
 ### Transriptions configuration ###
-// Currently only Slovene transcriptions are supported (set $LOCALE to 'sl_SI')
 # $SHOW_TRANSCRIPTIONS = true;
+# https://github.com/openai/whisper#available-models-and-languages
+# $ASR_MODEL = "openai/whisper-large-v3"; // Model for ASR
+# $ASR_LANGUAGE = "auto"; // Language for ASR (auto, en, sl, de, fr...)
+# https://huggingface.co/settings/tokens (create a token and paste it here)
+# 'Make calls to the serverless Inference API' should be enabled
+# $HF_TOKEN = "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"; // Token for Hugging Face API
 ### End transcriptions configuration ###
