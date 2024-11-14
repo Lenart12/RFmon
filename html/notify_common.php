@@ -69,3 +69,84 @@ function get_current_notify_password_hash() {
     $notify_last_sent = file_get_contents($NOTIFY_LAST_SENT_TIME) ?: 0;
     return md5("rfmon" . $PASSWORD . $notify_last_sent);
 }
+
+function send_notification_email($recipients, $pending_files) {
+    global $SHOW_TRANSCRIPTIONS;
+    global $S_UNTRANSCRIBED_RECORDINGS;
+    global $S_RECORDINGS_WITHOUT_DIALOG;
+    global $S_NOTIFY_EMAIL_SUBJECT;
+    global $S_NOTIFY_EMAIL_BODY;
+    global $NOTIFY_LINK_HOST;
+    global $NOTIFY_AUTO_LOGIN;
+    global $TITLE;
+    global $NOTIFY_FROM;
+
+    $NEW_TRANSCRIPTIONS = '';
+    
+    if ($SHOW_TRANSCRIPTIONS) {
+        $transcriptions = array();
+        $untranscribed_count = 0;
+        $empty_count = 0;
+
+        foreach ($pending_files as $file) {
+            $transcription_file = str_replace('.mp3', '.txt', $file);
+
+            if (!file_exists($transcription_file) || !is_readable($transcription_file) || !str_ends_with($transcription_file, '.txt')) {
+                $untranscribed_count++;
+                continue;
+            }
+
+            $transcription = file_get_contents($transcription_file);
+            # If not transcribed or transcription is empty, skip
+            if (empty_transcription($transcription)) {
+                $empty_count++;
+                continue;
+            }
+            $transcriptions[] = $transcription;
+        }
+
+        $NEW_TRANSCRIPTIONS = '<ul>';
+        foreach ($transcriptions as $transcription) {
+            $NEW_TRANSCRIPTIONS .= "<li>$transcription</li>";
+        }
+        if ($untranscribed_count > 0) {
+            $NEW_TRANSCRIPTIONS .= "<li>$untranscribed_count $S_UNTRANSCRIBED_RECORDINGS</li>";
+        }
+        if ($empty_count > 0) {
+            $NEW_TRANSCRIPTIONS .= "<li>$empty_count $S_RECORDINGS_WITHOUT_DIALOG</li>";
+        }
+        $NEW_TRANSCRIPTIONS .= '</ul><br>';
+    }
+
+    $sent_count = 0;
+    foreach ($recipients as $email) {
+        if (empty($email)) {
+            continue;
+        }
+        $sent_count++;
+
+        $link_host = $NOTIFY_LINK_HOST;
+
+        if ($NOTIFY_AUTO_LOGIN) {
+            $correct_hash = get_current_notify_password_hash();
+            $link_host .= "?h=$correct_hash";
+        }
+
+        $tr_prop = array(
+            'EMAIL' => $email,
+            'TITLE' => $TITLE,
+            'NEW_RX_COUNT' => count($pending_files),
+            'NEW_TRANSCRIPTIONS' => $NEW_TRANSCRIPTIONS,
+            'NOTIFY_LINK_HOST' => $link_host,
+        );
+        
+        $subject = render_translation($S_NOTIFY_EMAIL_SUBJECT, $tr_prop);
+        $body = render_translation($S_NOTIFY_EMAIL_BODY, $tr_prop);
+
+        $headers = "From: $NOTIFY_FROM\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        mail($email, $subject, $body, $headers);
+    }
+
+    echo "Sent " . $sent_count . " notify emails.\n";
+}

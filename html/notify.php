@@ -58,65 +58,7 @@ if (isset($argv[1])) {
     $pending_files = array_unique($pending_files);
     file_put_contents($NOTIFY_WAIT_FOR_MORE_PENDING_FILE, '');
 
-    $NEW_RX_COUNT = count($pending_files);
-    $NEW_TRANSCRIPTIONS = '';
-    
-    if ($SHOW_TRANSCRIPTIONS) {
-        $transcriptions = array();
-
-        foreach ($pending_files as $file) {
-            $transcription_file = str_replace('.mp3', '.txt', $file);
-            $transcription = file_get_contents($transcription_file);
-            # If not transcribed or transcription is empty, skip
-            if (empty_transcription($transcription)) {
-                continue;
-            }
-            $transcriptions[] = $transcription;
-        }
-
-        if (count($transcriptions) == 0) {
-            die("No interesting transcriptions found.");
-        }
-
-        $NEW_TRANSCRIPTIONS = '<ul>';
-        foreach ($transcriptions as $transcription) {
-            $NEW_TRANSCRIPTIONS .= "<li>$transcription</li>";
-        }
-        $NEW_TRANSCRIPTIONS .= '</ul><br>';
-    }
-
-
-    $sent_count = 0;
-    foreach ($emails as $email) {
-        if (empty($email)) {
-            continue;
-        }
-        $sent_count++;
-
-        $link_host = $NOTIFY_LINK_HOST;
-
-        if ($NOTIFY_AUTO_LOGIN) {
-            $correct_hash = get_current_notify_password_hash();
-            $link_host .= "?h=$correct_hash";
-        }
-
-        $tr_prop = array(
-            'EMAIL' => $email,
-            'TITLE' => $TITLE,
-            'NEW_RX_COUNT' => $NEW_RX_COUNT,
-            'NEW_TRANSCRIPTIONS' => $NEW_TRANSCRIPTIONS,
-            'NOTIFY_LINK_HOST' => $link_host,
-        );
-        
-        $subject = render_translation($S_NOTIFY_EMAIL_SUBJECT, $tr_prop);
-        $body = render_translation($S_NOTIFY_EMAIL_BODY, $tr_prop);
-
-        $headers = "From: $NOTIFY_FROM\r\n";
-        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        mail($email, $subject, $body, $headers);
-    }
-
-    echo "Sent " . $sent_count . " notify emails.\n";
+    send_notification_email($emails, $pending_files);
 
     exit();
 }
