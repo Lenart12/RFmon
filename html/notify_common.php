@@ -64,10 +64,8 @@ function empty_transcription($transcription) {
 }
 
 function get_current_notify_password_hash() {
-    global $NOTIFY_LAST_SENT_TIME;
     global $PASSWORD;
-    $notify_last_sent = file_get_contents($NOTIFY_LAST_SENT_TIME) ?: 0;
-    return md5("rfmon" . $PASSWORD . $notify_last_sent);
+    return md5("rfmon" . $PASSWORD );
 }
 
 function send_notification_email($recipients, $pending_files) {
