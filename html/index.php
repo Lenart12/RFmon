@@ -178,6 +178,9 @@ function tx_group_name($group) {
 }
 
 $rfmon_service_active = trim(shell_exec('systemctl is-active rfmon.service')) == 'active';
+
+$config_sh = __DIR__ . '/../util/config.sh';
+exec($config_sh, $config_error, $config_status);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -233,6 +236,14 @@ $rfmon_service_active = trim(shell_exec('systemctl is-active rfmon.service')) ==
                 <span><?= $_SESSION['notify'] ?></span>
             </div>
             <?php unset($_SESSION['notify']); ?>
+        <?php endif; ?>
+        <?php if ($config_status != 0): ?>
+            <div class="error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span><?= $S_CONFIG_ERROR ?></span>
+                <br>
+                <span><?= implode("<br>", $config_error) ?></span>
+            </div>
         <?php endif; ?>
         <div class="recordings">
             <?php foreach ($audio_records_grouped as $date => &$groups): ?>

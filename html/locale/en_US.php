@@ -22,3 +22,4 @@ $S_NOTIFY_EMAIL_SUBJECT = 'New activity on %TITLE%';
 $S_NOTIFY_EMAIL_BODY = 'New messages: %NEW_RX_COUNT%<br>%NEW_TRANSCRIPTIONS%You can listen to new recordings at <a href="%NOTIFY_LINK_HOST%">%TITLE%</a>.<br><br><a href="%NOTIFY_LINK_HOST%/notify.php?r=%EMAIL%">Unsubscribe</a>';
 $S_RECORDINGS_WITHOUT_DIALOG = 'recordings without dialog.';
 $S_UNTRANSCRIBED_RECORDINGS = 'untranscribed recordings.';
+$S_CONFIG_ERROR = 'Configuration error!';
