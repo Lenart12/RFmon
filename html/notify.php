@@ -25,6 +25,10 @@ if (isset($argv[1])) {
     }
     fclose($fp);
 
+    $MYPID = getmypid();
+    echo "Notify[$MYPID]: Received $rx_file at $rx_time, waiting...\n";
+
+
     # Wait if the script is called multiple times in a short period
     $sleep_time = $NOTIFY_WAIT_FOR_MORE;
     if (isset($argv[2])) {
@@ -36,6 +40,7 @@ if (isset($argv[1])) {
     # and we should exit to avoid sending multiple emails
     $new_rx_time = file_get_contents($NOTIFY_LAST_RECEIVED_TIME, LOCK_EX);
     if ($new_rx_time != $rx_time) {
+        echo "Notify[$MYPID]: Not running, new received time: $new_rx_time\n";
         exit();
     }
 
@@ -45,6 +50,8 @@ if (isset($argv[1])) {
     if (time() - intval($last_sent_time) < $NOTIFY_TIMEOUT) {
         // Reset timeout to avoid sending multiple emails
         // when called multiple times in a short period
+        $time_to_wait = $NOTIFY_TIMEOUT - (time() - intval($last_sent_time));
+        echo "Notify[$MYPID]: Not sending for atleast $time_to_wait seconds\n";
         exit();
     }
 
@@ -57,6 +64,9 @@ if (isset($argv[1])) {
     $pending_files = file($NOTIFY_WAIT_FOR_MORE_PENDING_FILE, FILE_IGNORE_NEW_LINES);
     $pending_files = array_unique($pending_files);
     file_put_contents($NOTIFY_WAIT_FOR_MORE_PENDING_FILE, '');
+
+    echo "Notify[$MYPID]: Sending emails to " . count($emails) . " subscribers...\n";
+    echo "Notify[$MYPID]: Pending files: " . count($pending_files) . "\n";
 
     send_notification_email($emails, $pending_files);
 

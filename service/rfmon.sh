@@ -28,7 +28,7 @@ function watch_for_new_files() {
             # Call the notify.php script with the new file as an argument
             if [ "$NOTIFY_ENABLED" == "YES" ]
             then
-                php "$NOTIFY_PHP" "$NEW_FILE" &
+                php "$NOTIFY_PHP" "$new_file" &
             fi
         fi
     done
