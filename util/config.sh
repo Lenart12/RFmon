@@ -86,6 +86,18 @@ then
     exit 1
 fi
 
+if [ "$TRANSCRIBE_AUDIO" == "YES" ] && ! [[ $HF_TIMEOUT_WARM =~ ^[0-9]+$ ]]
+then
+    echo "HF_TIMEOUT_WARM is not set or is not a number."
+    exit 1
+fi
+
+if [ "$TRANSCRIBE_AUDIO" == "YES" ] && ! [[ $HF_TIMEOUT_COLD =~ ^[0-9]+$ ]]
+then
+    echo "HF_TIMEOUT_COLD is not set or is not a number."
+    exit 1
+fi
+
 if [ ! -x "$RTLSDR_BIN_PATH" ]
 then
     echo "RTLSDR_BIN_PATH [$RTLSDR_BIN_PATH] is not an executable file."

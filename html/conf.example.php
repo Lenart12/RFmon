@@ -47,4 +47,6 @@ $RECORD_MAX_AGE = 30 * (24 * 3600); // 30 days
 # https://huggingface.co/settings/tokens (create a token and paste it here)
 # 'Make calls to the serverless Inference API' should be enabled
 # $HF_TOKEN = "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"; // Token for Hugging Face API
+# $HF_TIMEOUT_WARM = 10; // Timeout for the first request to the API (in seconds)
+# $HF_TIMEOUT_COLD = 300; // Timeout for retries to the API if first request fails (in seconds)
 ### End transcriptions configuration ###

@@ -14,8 +14,6 @@ function transcribe_audio() {
     local transcription_status
     local transcribed_json
 
-    local timeout_warm=10
-
     local file_b64=$(base64 -w 0 "$audio_file")
     local payload="{\"inputs\":\"$file_b64\",\"parameters\":{\"generate_kwargs\":{\"language\": \"$ASR_LANGUAGE\"}}}"
 
@@ -25,7 +23,7 @@ function transcribe_audio() {
         -d "$payload" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $HF_TOKEN" \
-        --max-time $timeout_warm
+        --max-time $HF_TIMEOUT_WARM
     )
     local request_status=$?
     
@@ -64,12 +62,10 @@ function transcribe_audio_cold() {
 
     echo "Transcribing $audio_file"
 
-    local timeout_cold=300
-
     local file_b64=$(base64 -w 0 "$audio_file")
     local payload="{\"inputs\":\"$file_b64\",\"parameters\":{\"generate_kwargs\":{\"language\": \"$ASR_LANGUAGE\"}}}"
 
-    local timeout=$timeout_cold
+    local timeout=$HF_TIMEOUT_COLD
     local t0="$(date +%s)"
 
     # While transciption file does not exist
@@ -88,7 +84,7 @@ function transcribe_audio_cold() {
         
         # Update timeout
         local t1=$(date +%s)
-        timeout=$((timeout_cold - (t1 - t0)))
+        timeout=$((HF_TIMEOUT_COLD - (t1 - t0)))
 
         if [ $request_status -eq 28 ] || [ $timeout -le 0 ]; then
             echo "Cold timeout reached while waiting for transcription."
