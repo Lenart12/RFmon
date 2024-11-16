@@ -23,6 +23,11 @@ function watch_for_new_files() {
             if [ "$TRANSCRIBE_AUDIO" == "YES" ]
             then
                 transcribe_audio "$new_file"
+
+                # Transcribe the audio file if it hasn't been transcribed yet
+                if ! [ -f "$(transcription_name "$new_file")" ]; then
+                    transcribe_audio_cold "$new_file" &
+                fi
             fi
 
             # Call the notify.php script with the new file as an argument

@@ -28,7 +28,7 @@ do
         fi
 
         echo "Processing file: $file"
-        transcribe_audio "$file"
+        transcribe_audio_cold "$file"
 
         sleep 5
     fi
