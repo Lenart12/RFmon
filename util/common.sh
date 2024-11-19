@@ -8,8 +8,35 @@ function transcription_name() {
     echo "${audio_file%.mp3}.txt"
 }
 
+function detect_voice_activity() {
+    local audio_file="$1"
+    local vad_stat
+    vad_stat=$(sox "$audio_file" -n vad stat 2>&1)
+    local vad_status=$?
+
+    if [ $vad_status -ne 0 ]; then
+        echo "Error detecting voice activity for $audio_file."
+        return 0
+    fi
+    local vad_samples=$(echo "$vad_stat" | grep "Samples read" | awk '{print $3}')
+    
+    if [ $vad_samples -gt 0 ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function transcribe_audio() {
     local audio_file="$1"
+    local transcription_file=$(transcription_name "$audio_file")
+
+    if ! detect_voice_activity "$audio_file"; then
+        echo "No voice activity detected in $audio_file."
+        echo -n "" > "$transcription_file"
+        return 0
+    fi
+
     local transcription
     local transcription_status
     local transcribed_json
@@ -43,7 +70,6 @@ function transcribe_audio() {
 
     if [ $transcription_status -eq 0 ]; then
         # Save the transcription to a text file
-        local transcription_file=$(transcription_name "$audio_file")
         echo "$transcription" > "$transcription_file"
         echo "Transcription saved to: $transcription_file"
     else
@@ -59,6 +85,12 @@ function transcribe_audio_cold() {
     local transcription_status
     local transcribed_json
     local transcription_file=$(transcription_name "$audio_file")
+
+    if ! detect_voice_activity "$audio_file"; then
+        echo "No voice activity detected in $audio_file."
+        echo -n "" > "$transcription_file"
+        return 0
+    fi
 
     echo "Transcribing $audio_file"
 

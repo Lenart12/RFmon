@@ -124,3 +124,10 @@ then
     echo "Please install curl package."
     exit 1
 fi
+
+if [ "$TRANSCRIBE_AUDIO" == "YES" ] && ! command -v sox &> /dev/null
+then
+    echo "sox command not found."
+    echo "Please install sox package."
+    exit 1
+fi

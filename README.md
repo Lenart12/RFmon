@@ -57,7 +57,7 @@ To install RFMON, follow these steps:
 
     - First install dependencies
         ```sh
-        sudo apt curl jq
+        sudo apt curl jq sox
         ```
 
     - To enable transcriptions, you need to enable them `conf.php`.
