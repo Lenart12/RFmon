@@ -50,3 +50,12 @@ $RECORD_MAX_AGE = 30 * (24 * 3600); // 30 days
 # $HF_TIMEOUT_WARM = 10; // Timeout for the first request to the API (in seconds)
 # $HF_TIMEOUT_COLD = 300; // Timeout for retries to the API if first request fails (in seconds)
 ### End transcriptions configuration ###
+
+### Quirks ###
+// Special handlers for different quirks in the project
+// Uncomment the following line to enable the quirk
+
+// If transcribing slovenian language with openai/whisper-large-v3 model, hallucinations are present
+// for empty audio recordings, or recordings with no speech. This quirk will check for common hallucinations
+// and remove them from the transcriptions.
+# $QUIRKS_TRANSCRIBE_LANG_SL_HALLUCINATIONS = true;

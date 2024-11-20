@@ -2,6 +2,7 @@
 
 SCRIPT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 source "$SCRIPT_DIR/config.sh"
+source "$SCRIPT_DIR/quirks.sh"
 
 function transcription_name() {
     local audio_file="$1"
@@ -72,6 +73,7 @@ function transcribe_audio() {
         # Save the transcription to a text file
         echo "$transcription" > "$transcription_file"
         echo "Transcription saved to: $transcription_file"
+        quirks_after_transcription "$audio_file" "$transcription_file"
     else
         echo "$transcribed_json"
         echo "Error processing transcription for $audio_file."
@@ -135,14 +137,15 @@ function transcribe_audio_cold() {
         if [ $transcription_status -eq 0 ]; then
             # Save the transcription to a text file
             echo "$transcription" > "$transcription_file"
+            local tf="$(date +%s)"
+            local tt="$((tf - t0))"
+            echo "Transcription saved to: $transcription_file in $tt seconds."
+            quirks_after_transcription "$audio_file" "$transcription_file"
         else
             echo "[$transcribed_json]"
         fi
     done
 
-    local tf="$(date +%s)"
-    local tt="$((tf - t0))"
-    echo "Transcription saved to: $transcription_file in $tt seconds."
     return 0
 }
 
