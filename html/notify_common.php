@@ -146,7 +146,7 @@ function send_notification_email($recipients, $pending_messages) {
         $tr_prop = array(
             'EMAIL' => $email,
             'TITLE' => $TITLE,
-            'NEW_RX_COUNT' => count($pending_files),
+            'NEW_RX_COUNT' => $pending_messages['total'],
             'NEW_TRANSCRIPTIONS' => $NEW_TRANSCRIPTIONS,
             'NOTIFY_LINK_HOST' => $link_host,
         );
