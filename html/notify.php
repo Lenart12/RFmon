@@ -65,10 +65,21 @@ if (isset($argv[1])) {
     $pending_files = array_unique($pending_files);
     file_put_contents($NOTIFY_WAIT_FOR_MORE_PENDING_FILE, '');
 
-    echo "Notify[$MYPID]: Sending emails to " . count($emails) . " subscribers...\n";
-    echo "Notify[$MYPID]: Pending files: " . count($pending_files) . "\n";
+    $pending_messages = parse_pending_messages($pending_files);
 
-    send_notification_email($emails, $pending_files);
+    if ($NOTIFY_DONT_SEND_NO_DIALOG) {
+        if ($pending_messages["no_dialog"] == $pending_messages["total"]) {
+            echo "Notify[$MYPID]: No dialog in any of the pending files, not sending email.\n";
+            // Restore last sent time to allow sending emails again
+            file_put_contents($NOTIFY_LAST_SENT_TIME, $last_sent_time, LOCK_EX);
+            exit();
+        }
+    }
+
+    echo "Notify[$MYPID]: Sending emails to " . count($emails) . " subscribers...\n";
+    echo "Notify[$MYPID]: Pending files: " . $pending_messages["total"] . "\n";
+
+    send_notification_email($emails, $pending_messages);
 
     exit();
 }

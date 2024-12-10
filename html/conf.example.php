@@ -37,6 +37,7 @@ $RECORD_MAX_AGE = 30 * (24 * 3600); // 30 days
 # $NOTIFY_FROM = "$TITLE <rfmon@example.com>"; // Email sender
 # $NOTIFY_LINK_HOST = "http://example.com/rfmon"; // Hostname (and path) to rfmon
 # $NOTIFY_AUTO_LOGIN = true; // Automatically log in user to the app when clicking the link (by adding a temporary login token to the link host URL ?h=...)
+# $NOTIFY_DONT_SEND_NO_DIALOG = true; // Don't send notification if there is no dialog in any of the pending files
 ### End email notification configuration ###
 
 ### Transriptions configuration ###

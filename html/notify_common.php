@@ -68,7 +68,37 @@ function get_current_notify_password_hash() {
     return md5("rfmon" . $PASSWORD );
 }
 
-function send_notification_email($recipients, $pending_files) {
+function parse_pending_messages($pending_files) {
+    $pending_messages = array(
+        "transcriptions" => array(),
+        "no_dialog" => 0,
+        "untranscribed" => 0,
+        "total" => 0,
+    );
+
+    foreach ($pending_files as $file) {
+        $transcription_file = str_replace('.mp3', '.txt', $file);
+
+        if (!file_exists($transcription_file) || !is_readable($transcription_file) || !str_ends_with($transcription_file, '.txt')) {
+            $pending_messages['untranscribed']++;
+            continue;
+        }
+
+        $transcription = file_get_contents($transcription_file);
+        # If not transcribed or transcription is empty, skip
+        if (empty_transcription($transcription)) {
+            $pending_messages['no_dialog']++;
+            continue;
+        }
+        $pending_messages['transcriptions'][] = $transcription;
+    }
+
+    $pending_messages['total'] = count($pending_files) + $pending_messages['untranscribed'] + $pending_messages['no_dialog'];
+
+    return $pending_messages;
+}
+
+function send_notification_email($recipients, $pending_messages) {
     global $SHOW_TRANSCRIPTIONS;
     global $S_UNTRANSCRIBED_RECORDINGS;
     global $S_RECORDINGS_WITHOUT_DIALOG;
@@ -82,26 +112,9 @@ function send_notification_email($recipients, $pending_files) {
     $NEW_TRANSCRIPTIONS = '';
     
     if ($SHOW_TRANSCRIPTIONS) {
-        $transcriptions = array();
-        $untranscribed_count = 0;
-        $empty_count = 0;
-
-        foreach ($pending_files as $file) {
-            $transcription_file = str_replace('.mp3', '.txt', $file);
-
-            if (!file_exists($transcription_file) || !is_readable($transcription_file) || !str_ends_with($transcription_file, '.txt')) {
-                $untranscribed_count++;
-                continue;
-            }
-
-            $transcription = file_get_contents($transcription_file);
-            # If not transcribed or transcription is empty, skip
-            if (empty_transcription($transcription)) {
-                $empty_count++;
-                continue;
-            }
-            $transcriptions[] = $transcription;
-        }
+        $transcriptions = $pending_messages['transcriptions'];
+        $untranscribed_count = $pending_messages['untranscribed'];
+        $empty_count = $pending_messages['no_dialog'];
 
         $NEW_TRANSCRIPTIONS = '<ul>';
         foreach ($transcriptions as $transcription) {
