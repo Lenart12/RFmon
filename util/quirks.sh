@@ -11,6 +11,8 @@ function quirks_after_transcription() {
         # If transcription is " Hvala.", then it is probably a hallucination, so set it to empty string.
         if [ "$transcription" == " Hvala." ]; then
             echo -n > "$transcription_file"
+        elif [ "$transcription" == " Hvala za pozornost." ]; then
+            echo -n > "$transcription_file"
         fi
     fi
 }
