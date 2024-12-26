@@ -93,7 +93,7 @@ function parse_pending_messages($pending_files) {
         $pending_messages['transcriptions'][] = $transcription;
     }
 
-    $pending_messages['total'] = count($pending_files) + $pending_messages['untranscribed'] + $pending_messages['no_dialog'];
+    $pending_messages['total'] = count($pending_files["transcriptions"]) + $pending_messages['untranscribed'] + $pending_messages['no_dialog'];
 
     return $pending_messages;
 }
