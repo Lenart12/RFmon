@@ -193,6 +193,8 @@ audio {
     border-radius: 5px;
     transition: background-color 0.3s;
     font-weight: bold;
+    border: none;
+    cursor: pointer;
 }
 
 .pagination-button:hover {
