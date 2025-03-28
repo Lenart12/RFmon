@@ -264,7 +264,7 @@ exec($config_sh, $config_error, $config_status);
                                                 <span class="time">
                                                     <i class="fas fa-volume-up"></i><?= $record['datetime']->format('H:i:s') ?>
                                                 </span>
-                                                <audio controls>
+                                                <audio controls preload="none">
                                                     <source src="audio.php?fn=<?= $record['fid'] ?>" type="audio/mpeg">
                                                     <?= $S_NO_AUDIO_SUPPORT ?>
                                                 </audio>
