@@ -23,3 +23,4 @@ $S_NOTIFY_EMAIL_BODY = 'New messages: %NEW_RX_COUNT%<br>%NEW_TRANSCRIPTIONS%You 
 $S_RECORDINGS_WITHOUT_DIALOG = 'recordings without dialog.';
 $S_UNTRANSCRIBED_RECORDINGS = 'untranscribed recordings.';
 $S_CONFIG_ERROR = 'Configuration error!';
+$S_NEW_RECORDINGS = 'New recordings are available.';

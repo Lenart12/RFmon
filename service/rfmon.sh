@@ -30,6 +30,9 @@ function watch_for_new_files() {
                 fi
             fi
 
+            # Notify the latest file to the web interface
+            basename "$new_file" > "$NOTIFY_DIR/notify_latest_file.txt"
+
             # Call the notify.php script with the new file as an argument
             if [ "$NOTIFY_ENABLED" == "YES" ]
             then

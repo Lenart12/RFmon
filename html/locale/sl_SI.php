@@ -23,3 +23,4 @@ $S_NOTIFY_EMAIL_BODY = 'Število novih posnetkov: %NEW_RX_COUNT%<br>%NEW_TRANSCR
 $S_RECORDINGS_WITHOUT_DIALOG = 'posnetkov brez dialoga.';
 $S_UNTRANSCRIBED_RECORDINGS = 'nerazpoznanih posnetkov.';
 $S_CONFIG_ERROR = 'Napaka v konfiguraciji!';
+$S_NEW_RECORDINGS = 'Na voljo so novi posnetki.';

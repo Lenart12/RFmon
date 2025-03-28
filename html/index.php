@@ -97,10 +97,16 @@ $fmt = new IntlDateFormatter($LOCALE, IntlDateFormatter::RELATIVE_LONG, IntlDate
 
 $audio_files = array_diff(scandir($AUDIO_SRC_DIR, SCANDIR_SORT_DESCENDING), array('..', '.'));
 
+$latest_audio = '';
+
 $audio_records = array();
 
 foreach ($audio_files as $file) {
     if (preg_match('/^zm_(\d+)_(\d+)\.mp3$/', $file, $matches)) {
+        if ($latest_audio == '') {
+            $latest_audio = $file;
+        }
+
         $date = $matches[1];
         $time = $matches[2];
 
@@ -195,6 +201,7 @@ exec($config_sh, $config_error, $config_status);
     <script src="script.js"></script>
 </head>
 <body>
+    <input type="hidden" id="latest-audio" value="<?= $latest_audio ?>">
     <h1>
         <img src="rfmon.png" alt="RFmon" style="height: 2em; vertical-align: middle;">
         - <?= $TITLE ?>
@@ -245,6 +252,11 @@ exec($config_sh, $config_error, $config_status);
                 <span><?= implode("<br>", $config_error) ?></span>
             </div>
         <?php endif; ?>
+        <div class="notify" id="new-audio" hidden>
+            <i class="fas fa-bell"></i>
+            <span><?= $S_NEW_RECORDINGS ?></span> <br>
+            <a href=""><i class="fas fa-sync-alt"></i> <?= $S_REFRESH ?></a>
+        </div>
         <div class="recordings">
             <?php foreach ($audio_records_grouped as $date => &$groups): ?>
                 <div class="group-date">
