@@ -171,6 +171,61 @@ audio {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pagination-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+.pagination-button:hover {
+    background-color: #45a049;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-info {
+    padding: 8px 15px;
+    background-color: #2196F3;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.pagination-date-picker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.date-picker-input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.pagination-group {
+    display: flex;
+    gap: 5px;
+}
+
 .subscribe {
     padding: 20px;
     background-color: white;

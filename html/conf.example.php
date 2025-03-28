@@ -19,7 +19,7 @@ $RF_FREQ = 446.05625; // Frequency to monitor
 $RTLSDR_BIN_PATH = "/usr/local/bin/rtl_airband"; // Path to the rtl_airband binary
 $AUDIO_SRC_DIR = "/path/to/RFmon/rec"; // This path should be the same as the one in rfmon_sdr.conf
 $TX_GROUPING_THRESHOLD = 45; // Group records that are within this threshold of eachother (in seconds)
-$RECORD_MAX_AGE = 30 * (24 * 3600); // 30 days
+$TIME_PER_PAGE = 3 * 24 * 3600; // Time to show on one page (in seconds)
 ### End audio recording configuration ###
 
 ### Password protection configuration ###

@@ -24,3 +24,7 @@ $S_RECORDINGS_WITHOUT_DIALOG = 'posnetkov brez dialoga.';
 $S_UNTRANSCRIBED_RECORDINGS = 'nerazpoznanih posnetkov.';
 $S_CONFIG_ERROR = 'Napaka v konfiguraciji!';
 $S_NEW_RECORDINGS = 'Na voljo so novi posnetki.';
+$S_PREV_PAGE = 'Prejšnja stran';
+$S_NEXT_PAGE = 'Naslednja stran';
+$S_START = 'Začetek';
+$S_GOTO_DATE = 'Pojdi na datum';

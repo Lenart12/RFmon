@@ -95,6 +95,35 @@ if (isset($PASSWORD) && !isset($_SESSION['auth'])) {
 
 $fmt = new IntlDateFormatter($LOCALE, IntlDateFormatter::RELATIVE_LONG, IntlDateFormatter::NONE);
 
+// Pagination parameters
+$current_time = time();
+$page_size = isset($TIME_PER_PAGE) ? $TIME_PER_PAGE : (7 * 24 * 3600); // Default: 1 week
+
+$to_timestamp = isset($_GET['to']) ? intval($_GET['to']) : $current_time;
+$from_timestamp = isset($_GET['from']) ? intval($_GET['from']) : ($to_timestamp - $page_size);
+
+if ($from_timestamp > $to_timestamp) {
+    // From timestamp is greater than to timestamp, swap them
+    $temp = $from_timestamp;
+    $from_timestamp = $to_timestamp;
+    $to_timestamp = $temp;
+}
+
+// If the current time is within 5 minutes of the to timestamp, set it to the current time
+if (abs($current_time - $to_timestamp) < 5 * 60) {
+    $to_timestamp = $current_time;
+}
+
+// Timestamps:
+// prev_from | ... | prev_to | from_timestamp | ... | to_timestamp | next_from | ... | next_to
+
+// Calculate pagination timestamps
+$prev_to = $from_timestamp;
+$prev_from = $prev_to - $page_size;
+$next_from = $to_timestamp;
+$next_to = $to_timestamp + $page_size;
+$has_next = $next_from < $current_time;
+
 $audio_files = array_diff(scandir($AUDIO_SRC_DIR, SCANDIR_SORT_DESCENDING), array('..', '.'));
 
 $latest_audio = '';
@@ -113,8 +142,10 @@ foreach ($audio_files as $file) {
         $datetime = DateTime::createFromFormat('YmdHis', $date . $time, new DateTimeZone('UTC'));
         $datetime->setTimezone(new DateTimeZone($TIMEZONE));
 
-        if ($datetime->getTimestamp() < time() - $RECORD_MAX_AGE) {
-            break;
+        $file_timestamp = $datetime->getTimestamp();
+
+        if ($file_timestamp < $from_timestamp || $file_timestamp > $to_timestamp) {
+            continue;
         }
 
         if ($SHOW_TRANSCRIPTIONS == true) {
@@ -158,6 +189,22 @@ foreach ($audio_records as $record) {
     if (!$grouped) {
         $audio_records_grouped[$date][] = array($record);
     }
+}
+
+function time_range_name($from_timestamp, $to_timestamp) {
+    global $fmt;
+    // Create DateTime objects with @ prefix to indicate Unix timestamp
+    $from_date = new DateTime('@' . $from_timestamp);
+    $to_date = new DateTime('@' . $to_timestamp);
+    
+    // Set the timezone since @ timestamps are UTC by default
+    global $TIMEZONE;
+    $from_date->setTimezone(new DateTimeZone($TIMEZONE));
+    $to_date->setTimezone(new DateTimeZone($TIMEZONE));
+    
+    $from_str = $fmt->format($from_date);
+    $to_str = $fmt->format($to_date);
+    return "$from_str - $to_str";
 }
 
 function date_group_name($date) {
@@ -207,28 +254,6 @@ exec($config_sh, $config_error, $config_status);
         - <?= $TITLE ?>
     </h1>
     <div class="content">
-        <div class="controls">
-            <h2 class="controls-header">
-                <i class="fas fa-cogs"></i> <?= $S_SETTINGS ?>
-            </h2>
-            <div class="controls-content">
-                <a href=""><i class="fas fa-sync-alt"></i> <?= $S_REFRESH ?></a>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="auto-play" checked>
-                    <label for="auto-play"><i class="fas fa-play"></i> <?= $S_AUTOPLAY ?></label>
-                </div>
-                <?php if (isset($NOTIFY_DIR)): ?>
-                    <div class="subscribe">
-                        <form action="notify.php" method="post">
-                            <label for="ne"><i class="fas fa-envelope"></i> <?= $S_SUBSCRIBE_NOTIFICATIONS ?></label>
-                            <br>
-                            <input id="ne" type="email" name="s" placeholder="<?= $S_ENTER_EMAIL ?>" required>
-                            <button type="submit"><i class="fas fa-paper-plane"></i> <?= $S_SUBSCRIBE ?></button>
-                        </form>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
         <?php if (!$rfmon_service_active): ?>
             <div class="warning">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -258,6 +283,36 @@ exec($config_sh, $config_error, $config_status);
             <a href=""><i class="fas fa-sync-alt"></i> <?= $S_REFRESH ?></a>
         </div>
         <div class="recordings">
+            <div class="pagination">
+                <div class="pagination-group">
+                    <a href="?from=<?= $prev_from ?>&to=<?= $prev_to ?>" class="pagination-button">
+                        <i class="fas fa-chevron-left"></i> <?= $S_PREV_PAGE ?>
+                    </a>
+                    
+                    <div class="pagination-date-picker">
+                        <input type="date" id="date-picker" class="date-picker-input">
+                        <button id="date-picker-button" class="pagination-button">
+                            <i class="fas fa-calendar-alt"></i> <?= $S_GOTO_DATE ?>
+                        </button>
+                    </div>
+                </div>
+                
+                <span class="pagination-info">
+                    <?= time_range_name($from_timestamp, $to_timestamp) ?>
+                </span>
+                
+                <?php if ($has_next): ?>
+                <div class="pagination-group">
+                    <a href="?" class="pagination-button">
+                        <i class="fas fa-home"></i> <?= $S_START ?>
+                    </a>
+                    <a href="?from=<?= $next_from ?>&to=<?= $next_to ?>" class="pagination-button">
+                        <?= $S_NEXT_PAGE ?> <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+            
             <?php foreach ($audio_records_grouped as $date => &$groups): ?>
                 <div class="group-date">
                     <h2 class="gd-header">
@@ -299,6 +354,60 @@ exec($config_sh, $config_error, $config_status);
                     <p><i class="fas fa-info-circle"></i> <?= $S_NO_AUDIO_RECORDINGS ?></p>
                 </div>
             <?php endif; ?>
+            
+            <div class="pagination">
+                <div class="pagination-group">
+                    <a href="?from=<?= $prev_from ?>&to=<?= $prev_to ?>" class="pagination-button">
+                        <i class="fas fa-chevron-left"></i> <?= $S_PREV_PAGE ?>
+                    </a>
+                    
+                    <div class="pagination-date-picker">
+                        <input type="date" id="date-picker" class="date-picker-input">
+                        <button id="date-picker-button" class="pagination-button">
+                            <i class="fas fa-calendar-alt"></i> <?= $S_GOTO_DATE ?>
+                        </button>
+                    </div>
+                </div>
+                
+                <span class="pagination-info">
+                    <?= time_range_name($from_timestamp, $to_timestamp) ?>
+                </span>
+                
+                <?php if ($has_next): ?>
+                <div class="pagination-group">
+                    <a href="?" class="pagination-button">
+                        <i class="fas fa-home"></i> <?= $S_START ?>
+                    </a>
+                    <a href="?from=<?= $next_from ?>&to=<?= $next_to ?>" class="pagination-button">
+                        <?= $S_NEXT_PAGE ?> <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="controls">
+                <h2 class="controls-header">
+                    <i class="fas fa-cogs"></i> <?= $S_SETTINGS ?>
+                </h2>
+                <div class="controls-content">
+                    <a href=""><i class="fas fa-sync-alt"></i> <?= $S_REFRESH ?></a>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="auto-play" checked>
+                        <label for="auto-play"><i class="fas fa-play"></i> <?= $S_AUTOPLAY ?></label>
+                    </div>
+                    <?php if (isset($NOTIFY_DIR)): ?>
+                        <div class="subscribe">
+                            <form action="notify.php" method="post">
+                                <label for="ne"><i class="fas fa-envelope"></i> <?= $S_SUBSCRIBE_NOTIFICATIONS ?></label>
+                                <br>
+                                <input id="ne" type="email" name="s" placeholder="<?= $S_ENTER_EMAIL ?>" required>
+                                <button type="submit"><i class="fas fa-paper-plane"></i> <?= $S_SUBSCRIBE ?></button>
+                            </form>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
             <br>
             <div>
                 <i class="fas fa-code"></i> <?= $S_SOURCE_CODE ?>:
